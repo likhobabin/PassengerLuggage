@@ -9,6 +9,7 @@ import java.io.IOException;
 //
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
 //
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,11 +28,11 @@ import org.xml.sax.SAXParseException;
  * @author Ilya
  */
 class PassengerInfo{
-    int Id;
+    String Id;
     boolean LuggOutput;
     //
     public PassengerInfo(){
-        Id = -1;
+        Id = "-1";
         LuggOutput=false;
     }
 }
@@ -63,11 +64,11 @@ public class XMLLoader {
     
     public XMLLoader(String __xmlPath){
         FXMLPath = __xmlPath;
-        FPassInfoMap = new HashMap<>();
+        FPassInfoMap = new HashMap<String, PassengerInfo >();
     }
     //
     
-    public void loadDoc( )
+    public Map loadDoc( )
             throws Throwable, SAXParseException {
         //
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -113,6 +114,8 @@ public class XMLLoader {
             Node c_flight = getChild(flights, i);
             processFlight(c_flight);
         }
+        //
+        return(Collections.unmodifiableMap(FPassInfoMap));
     }
     //
     private static int getChildCount(Object __parent){
@@ -158,11 +161,7 @@ public class XMLLoader {
             //
             NodeList pass_luggs = f_pass.getChildNodes();
             Element pass_lugg = getChild(pass_luggs, 0x0);
-            String id = pass_lugg.getAttribute("id");
-            if(null!= id){
-                System.out.println("\nid karayl");
-            }
-            cPassInfo.Id = Integer.parseInt(id);
+            cPassInfo.Id = pass_lugg.getAttribute("id");
             //
             System.out.println("\n\tPassenger lugg_id: " +
                     cPassInfo.Id);
