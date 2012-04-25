@@ -18,6 +18,7 @@ import org.w3c.dom.NodeList;
 //
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 //
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -56,7 +57,13 @@ public class XMLLoader {
         catch(SAXParseException ex){
             ex.printStackTrace();
         }
-        catch(Throwable ex){
+        catch(ParserConfigurationException ex){
+            ex.printStackTrace();
+        }
+        catch(SAXException ex){
+            ex.printStackTrace();
+        }
+        catch(Exception ex){
             ex.printStackTrace();
         }
     }
@@ -69,7 +76,11 @@ public class XMLLoader {
     //
     
     public Map loadDoc( )
-            throws Throwable, SAXParseException {
+            throws Exception,
+                   IOException,
+                   SAXException,
+                   SAXParseException, 
+                   ParserConfigurationException {
         //
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         //

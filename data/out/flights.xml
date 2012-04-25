@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flights xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="flights.xsd">
-<flight number="86">
+<flight number="251">
 <passenger name="Аваз Иванов">
 <luggage id="0"/>
 </passenger>
@@ -298,8 +298,6 @@
 <passenger name="Гурий&#9; Колесников">
 <luggage id="98"/>
 </passenger>
-</flight>
-<flight number="875">
 <passenger name="Густав&#9; Карпов">
 <luggage id="99"/>
 </passenger>
@@ -420,8 +418,6 @@
 <passenger name="Ипполит&#9; Некрасов">
 <luggage id="138"/>
 </passenger>
-</flight>
-<flight number="714">
 <passenger name="Карл&#9; Хохлов">
 <luggage id="139"/>
 </passenger>
@@ -446,8 +442,6 @@
 <passenger name="Лавр&#9; Игнатьев">
 <luggage id="146"/>
 </passenger>
-</flight>
-<flight number="248">
 <passenger name="Лаврентий&#9; Савин">
 <luggage id="147"/>
 </passenger>
@@ -457,8 +451,6 @@
 <passenger name="Леонид&#9; Сафонов">
 <luggage id="149"/>
 </passenger>
-</flight>
-<flight number="698">
 <passenger name="Леонтий Капустин">
 <luggage id="150"/>
 </passenger>
@@ -576,6 +568,8 @@
 <passenger name="Платон&#9; Гришин">
 <luggage id="188"/>
 </passenger>
+</flight>
+<flight number="128">
 <passenger name="Прохор&#9; Кононов">
 <luggage id="189"/>
 </passenger>
@@ -609,6 +603,8 @@
 <passenger name="Савва&#9; Шаров">
 <luggage id="199"/>
 </passenger>
+</flight>
+<flight number="721">
 <passenger name="Самсон Устинов">
 <luggage id="200"/>
 </passenger>
