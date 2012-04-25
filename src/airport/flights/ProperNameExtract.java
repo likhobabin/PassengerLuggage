@@ -38,7 +38,7 @@ public class ProperNameExtract {
             throws IOException, URISyntaxException {
         //
         InputStream is = new FileInputStream(__file_path);
-        FReadFile = new BufferedReader(
+        BufferedReader FReadFile = new BufferedReader(
                 new InputStreamReader(is, __charSet));
         String in;
         //
@@ -67,7 +67,6 @@ public class ProperNameExtract {
         return (FStorage == null ) ? new ArrayList<String>( ) : FStorage;
     }
     //
-    private BufferedReader FReadFile;//to do: delete from fields
     private List<String > FStorage;
     private static final String VALIDATE_REXP = "^\\p{Lu}.+";    
     //

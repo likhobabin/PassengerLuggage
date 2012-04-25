@@ -291,8 +291,10 @@ public class DataBaseProcess {
         
         private XMLCreator xmlCreator(String f_nms_path,
                               String f_sirnms_path ) throws Exception {
+            String char_set = 
+                    DataBaseProcess.FConfigProps.getProperty("pl.charset");
             return((FXmlCreator==null) ? 
-                    new XMLCreator(f_nms_path, f_sirnms_path, "UTF8") 
+                    new XMLCreator(f_nms_path, f_sirnms_path, char_set) 
                     : FXmlCreator);
         }
         //
