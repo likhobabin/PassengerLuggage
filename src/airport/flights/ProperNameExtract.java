@@ -67,7 +67,7 @@ public class ProperNameExtract {
         return (FStorage == null ) ? new ArrayList<String>( ) : FStorage;
     }
     //
-    private BufferedReader FReadFile;
+    private BufferedReader FReadFile;//to do: delete from fields
     private List<String > FStorage;
     private static final String VALIDATE_REXP = "^\\p{Lu}.+";    
     //
