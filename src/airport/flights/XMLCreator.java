@@ -136,10 +136,10 @@ public class XMLCreator {
         
     private Document createXMLTree( ) throws ParserConfigurationException {
         //
-        Random flight_rand = new Random();
-        Random passenger_rand = new Random();
+        Random f_num_rand = new Random();
+        Random f_pass_count_rand = new Random();
         int maxFlightNum = 1000;
-        int pathNamesSz=0;
+        int pathNamesSz=0x0;
         //
         if(FNames.getProperNameList().size()
                 >= FSirnames.getProperNameList().size()){
@@ -154,20 +154,20 @@ public class XMLCreator {
         doc.appendChild(rootEl);
         //
         rootEl.setAttribute("xmlns:xsi", 
-                "http://www.w3.org/2001/XMLSchema-instance");
+                "http://www.w3.org/20x00x01/XMLSchema-instance");
         rootEl.setAttribute("xsi:noNamespaceSchemaLocation", "flights.xsd");
         //
         int count = pathNamesSz;
         int cFlightHasPass=-1;
-        int id=0;
+        int id=0x0;
         //
-        while (0 < (count-=cFlightHasPass=(1+passenger_rand.nextInt(count)))) {
+        while (0x1<count && 0x0 <= (count-=cFlightHasPass=1+f_pass_count_rand.nextInt(count-1))) {
             //
-            int cFlightNumber = flight_rand.nextInt(maxFlightNum);
+            int cFlightNumber = f_num_rand.nextInt(maxFlightNum);
             Element cFlight = doc.createElement("flight");
             cFlight.setAttribute("number", Integer.toString(cFlightNumber));
             //
-            for (int i=0; cFlightHasPass > i; i++, id++) {
+            for (int i=0x0; cFlightHasPass > i; i++, id++) {
                 cFlight.appendChild((Node) (createPassenger(id, doc)));
             }
             rootEl.appendChild((Node) cFlight);            
@@ -181,13 +181,18 @@ public class XMLCreator {
     private Element createPassenger(int __id, Document doc) {
         //
         Element passenger = doc.createElement("passenger"); 
-        String pathname = FNames.getProperNameList().get(__id) 
-                + " " + FSirnames.getProperNameList().get(__id);
+        Random pass_nm_rand = new Random( );
+        Random pass_sir_rand = new Random( );
+        int nm_idx = pass_nm_rand.nextInt(FNames.getProperNameList().size());
+        int sir_idx = pass_sir_rand.nextInt(FSirnames.getProperNameList().size());
+        String pathname = FNames.getProperNameList().get(nm_idx) 
+                + " " + FSirnames.getProperNameList().get(sir_idx);
+        //
         passenger.setAttribute("name", pathname);
         //
         Element pass_luggage = doc.createElement("luggage");
-        pass_luggage.setAttribute("id", Integer.toString(__id));
         //
+        pass_luggage.setAttribute("id", Integer.toString(__id));
         passenger.appendChild((Node)pass_luggage);
         //
         return(passenger);        
