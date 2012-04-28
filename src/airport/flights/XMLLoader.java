@@ -75,7 +75,7 @@ public class XMLLoader {
     }
     //
     
-    public Map loadDoc( )
+    public Map<String , PassengerInfo > loadDoc( )
             throws Exception {
         //
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

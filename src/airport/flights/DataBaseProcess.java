@@ -31,7 +31,7 @@ public class DataBaseProcess {
     public static void main(String[] args) {
         try {
             //
-            startServer();
+            startServer(null);
             try {
                 //
                 DataBaseProcess.generateData();
@@ -64,7 +64,7 @@ public class DataBaseProcess {
             finally {
                 //
                 try {
-                    stopServer();
+                    stopServer(null);
                 }
                 catch (IOException ex) {
                     ex.printStackTrace();
@@ -82,19 +82,25 @@ public class DataBaseProcess {
     }
     //
 
-    public static void startServer()
+    public static void startServer(String __derby_lib_path)
             throws IOException {
-        String dervy_lib_dir = System.getenv("DERBY_LIB");
-        Process p = Runtime.getRuntime().exec("java -jar " + dervy_lib_dir + "/derbyrun.jar "
-                + "server start");
+        if(null == __derby_lib_path){
+            __derby_lib_path = FConfigProps.getProperty("pl.server_jar_path");
+        }
+        //
+        Process p = Runtime.getRuntime().exec("java -jar " + __derby_lib_path 
+                + " server start");
     }
     //
 
-    public static void stopServer()
+    public static void stopServer(String __derby_lib_path)
             throws IOException {
-        String dervy_lib_dir = System.getenv("DERBY_LIB");
-        Process p = Runtime.getRuntime().exec("java -jar " + dervy_lib_dir + "/derbyrun.jar "
-                + "server stop");
+        if(null == __derby_lib_path){
+            __derby_lib_path = FConfigProps.getProperty("pl.server_jar_path");
+        }
+        //
+        Process p = Runtime.getRuntime().exec("java -jar " + __derby_lib_path 
+                + " server shutdown");
     }
     // 
 
@@ -125,6 +131,7 @@ public class DataBaseProcess {
     public static void generateData() throws Exception {
         DataBaseProcess.deleteTb();
         DataCreator data_gen = new DataCreator();
+        data_gen.generateXML();
         FPassInfoMap = data_gen.createDataBase();
     }
     //

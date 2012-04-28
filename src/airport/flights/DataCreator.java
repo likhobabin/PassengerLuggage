@@ -29,14 +29,21 @@ class DataCreator {
                                     curr_dir_path + f_sirnames_path);
     }
     //
+    
+    void generateXML() throws Exception {
+        String f_xml_path =
+                DataBaseProcess.FConfigProps.getProperty("pl.xml_path");
+        String curr_dir_path = new File(".").getCanonicalPath();
+        //
+        FXmlCreator.wrXMLTree(curr_dir_path + f_xml_path);
+        //
+    }
 
     Map<String , PassengerInfo > createDataBase() throws Exception {
         String f_xml_path =
                 DataBaseProcess.FConfigProps.getProperty("pl.xml_path");
         String curr_dir_path = new File(".").getCanonicalPath();
-        Map<String , PassengerInfo > xml_data_map=null;
         //
-        FXmlCreator.wrXMLTree(curr_dir_path + f_xml_path);
         XMLLoader xml_loader = new XMLLoader(curr_dir_path + f_xml_path);
         //
         return(creatTable(xml_loader));
