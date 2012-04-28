@@ -203,7 +203,7 @@ public class DataBaseProcess {
         String find_tb_nm = FConfigProps.getProperty("table.name");
         boolean b_exist = false;
         DatabaseMetaData db_meta_data = __conn.getMetaData();
-         ResultSet meta_data_res = db_meta_data.getTables(null, null,
+        ResultSet meta_data_res = db_meta_data.getTables(null, null,
                 null, new String[]{"TABLE"});
         //
         if (null != meta_data_res) {
