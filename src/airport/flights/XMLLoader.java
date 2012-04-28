@@ -76,11 +76,7 @@ public class XMLLoader {
     //
     
     public Map loadDoc( )
-            throws Exception,
-                   IOException,
-                   SAXException,
-                   SAXParseException, 
-                   ParserConfigurationException {
+            throws Exception {
         //
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         //
@@ -121,7 +117,7 @@ public class XMLLoader {
         Element root = doc.getDocumentElement();
         NodeList flights = root.getChildNodes();
         //
-        for (int i = 0; getChildCount(root) > i; i++) {
+        for (int i = 0x0; getChildCount(root) > i; i++) {
             Node c_flight = getChild(flights, i);
             processFlight(c_flight);
         }
@@ -161,22 +157,15 @@ public class XMLLoader {
                 getAttrByName(__flight, "number"));
         //
         NodeList f_passengers = __flight.getChildNodes();
-        for(int i=0; f_passengers.getLength()>i; i++){
+        for(int i=0x0; f_passengers.getLength()>i; i++){
             Element f_pass = getChild(f_passengers, i);
             //
             PassengerInfo cPassInfo = new PassengerInfo();
             String pass_nm = f_pass.getAttribute("name");
-            //
-            System.out.println("\n\tPassenger name: " +
-                    pass_nm);
-            //
             NodeList pass_luggs = f_pass.getChildNodes();
             Element pass_lugg = getChild(pass_luggs, 0x0);
+            //
             cPassInfo.Id = pass_lugg.getAttribute("id");
-            //
-            System.out.println("\n\tPassenger lugg_id: " +
-                    cPassInfo.Id);
-            //
             FPassInfoMap.put(pass_nm, cPassInfo);
         }
     }
