@@ -27,59 +27,7 @@ import java.util.Iterator;
  * @author ilya
  */
 public class DataBaseProcess {
-
-    public static void main(String[] args) {
-        try {
-            //
-            startServer(null);
-            try {
-                //
-                DataBaseProcess.generateData();
-                DataBaseProcess db_process = new DataBaseProcess( );
-                //
-                Iterator<String > passIt = db_process.getPassengerInfoMap()
-                        .keySet().iterator();
-                while(passIt.hasNext()){
-                    String pass_path_nm = passIt.next();
-                    db_process.getCheckedWeightBy(pass_path_nm);                    
-                }
-                //
-            }
-            catch (SQLException ex) {
-                for (Throwable t : ex) {
-                    t.printStackTrace();
-                }
-            }
-            catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            catch(URISyntaxException ex){
-                ex.printStackTrace();
-            }
-            catch(ClassNotFoundException ex){
-                ex.printStackTrace();
-            }
-            finally {
-                //
-                try {
-                    stopServer(null);
-                }
-                catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                //
-            }
-            //
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
     //
-
     public static void startServer(String __derby_lib_path)
             throws IOException {
         if(null == __derby_lib_path){
@@ -126,14 +74,6 @@ public class DataBaseProcess {
     }
     //    
 
-    public static void generateData() throws Exception {
-        DataBaseProcess.deleteTb();
-        DataCreator data_gen = new DataCreator();
-        data_gen.generateXML();
-        FPassInfoMap = data_gen.createDataBase();
-    }
-    //
-
     public static void deleteTb()
             throws SQLException,
             IOException,
@@ -157,22 +97,11 @@ public class DataBaseProcess {
     }
     //
     
-    Map<String , PassengerInfo > getPassengerInfoMap( ){
-        return(Collections.unmodifiableMap(FPassInfoMap));
-    }
-    //
-    
-    public int getCheckedWeightBy(String __pass_name) throws Exception {
-        if(null == FPassInfoMap){
-            throw new Exception("Error DataBaseProcess.getCheckedWeightBy "
-                    + " Passenger Info Map is null");
-        }
-        //
-        String find_id = FPassInfoMap.get(__pass_name).Id;
+    public static int getCheckedWeightBy(String __find_id) throws Exception {
         String tbName = FConfigProps.getProperty("table.name");
-        Connection conn = loadDB();
+        Connection conn = DataBaseProcess.loadDB();
         String query = "SELECT checked_weight FROM " + tbName 
-                + " WHERE id = "+find_id;
+                + " WHERE id = "+__find_id;
         //
         try {
             Statement stmnt = conn.createStatement();
@@ -235,8 +164,6 @@ public class DataBaseProcess {
     }
     //   
     
-    private static Map<String, PassengerInfo> FPassInfoMap;
-    //
     final static Properties FConfigProps;
     static 
     {
@@ -259,4 +186,5 @@ public class DataBaseProcess {
             FConfigProps = temp;   
         }
     }
+    //
 }

@@ -32,8 +32,8 @@ import java.awt.Component;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
 //
-
 
 public class ContentPane extends JPanel {
     //
@@ -59,21 +59,24 @@ public class ContentPane extends JPanel {
         FSirname = new JTextArea();
         FSirname.setColumns(20);
         JPanel lugg_panel = new JPanel();
-        BoxLayout lp_layout = new BoxLayout(lugg_panel, BoxLayout.X_AXIS);
+        BoxLayout lp_layout = new BoxLayout(lugg_panel, BoxLayout.Y_AXIS);
         lugg_panel.setLayout(lp_layout);
         FCheckWeight = new JTextArea();
         FCheckWeight.setColumns(20);
-        FLuggOutput = new JCheckBox();
-        FLuggOutput.setBorder(createColorBorder(Color.red));
-        FLuggOutput.setEnabled(false);
+        FLuggOutputChBox = new JCheckBox();
+        FLuggOutputChBox.setText("Багаж ушёл");
+        FLuggOutputChBox.setEnabled(false);
+        FLuggOutputChBox.setAlignmentX(Component.RIGHT_ALIGNMENT);
         lugg_panel.add(FCheckWeight);
-        lugg_panel.add(FLuggOutput);
+        FCheckWeight.setEditable(false);
+        lugg_panel.add(FLuggOutputChBox);
         //
-        FLuggOutput.addActionListener(new ActionListener(){
+        FLuggOutputChBox.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent __ev){
-                if(null != FClickPass)
+                if(null != FClickPass){
                     FOwner.putoutLuggageTo(FClickPass);
-                    FLuggOutput.setEnabled(false);
+                    FLuggOutputChBox.setEnabled(false);
+                }
             }
         });
         //
@@ -81,8 +84,10 @@ public class ContentPane extends JPanel {
         //
         FResponseBar.setLayout(respb_layout);
         FName.setBorder(createTextFieldBorder("Name", Color.BLACK));
+        FName.setEditable(false);
         FName.setAlignmentX(Component.RIGHT_ALIGNMENT);
         FSirname.setBorder(createTextFieldBorder("Sirname", Color.BLACK));
+        FSirname.setEditable(false);
         FSirname.setAlignmentX(Component.RIGHT_ALIGNMENT);
         lugg_panel.setBorder(createTextFieldBorder("Luggage Checkweight kg.", Color.BLACK));
         lugg_panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -118,7 +123,9 @@ public class ContentPane extends JPanel {
         FRequestList.clear();
         FName.setText("");
         FSirname.setText("");
-        FLuggOutput.setEnabled(false);
+        FCheckWeight.setText("");
+        FLuggOutputChBox.setEnabled(false);
+        FLuggOutputChBox.setSelected(false);
         //
         updateList( );
         
@@ -131,50 +138,59 @@ public class ContentPane extends JPanel {
     
     private JScrollPane createPassengerScrollList( ){
         FRequestList = new DefaultListModel( );
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
-        FRequestList.addElement("Вася");
         JList temp_list = new JList(FRequestList);
         JScrollPane req_scroll = new JScrollPane(temp_list);
         //
         temp_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        temp_list.addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent __ev){
-                if(__ev.getSource() instanceof JList){
-                    JList ev_src = (JList)(__ev.getSource());
-                    int idx = ev_src.getSelectedIndex();
-                    if (0x0 <= idx) {
+        temp_list.addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent __ev) {
+                if (__ev.getSource() instanceof JList) {
+                    //
+                    try {
                         //
-                        String temp = (String) FRequestList.get(idx);
-                        FClickPass = temp; 
-                        StringTokenizer str_tokenz = new StringTokenizer(temp);
-                        int i = 0;
-                        while (str_tokenz.hasMoreTokens()) {
-                            String word = str_tokenz.nextToken(" ");
-                            if (i == 0) {
-                                FName.setText(word);
+                        JList ev_src = (JList) (__ev.getSource());
+                        int idx = ev_src.getSelectedIndex();
+                        if (0x0 <= idx) {
+                            //
+                            String temp = (String) FRequestList.get(idx);
+                            FClickPass = temp;
+                            StringTokenizer str_tokenz = new StringTokenizer(temp);
+                            int i = 0;
+                            while (str_tokenz.hasMoreTokens()) {
+                                String word = str_tokenz.nextToken(" ");
+                                if (i == 0) {
+                                    FName.setText(word);
+                                }
+                                if (i == 1) {
+                                    FSirname.setText(word);
+                                }
+                                i++;
                             }
-                            if (i == 1) {
-                                FSirname.setText(word);
+                            //
+                            boolean ch_temp=false;
+                            if(FOwner.isLuggPutOut(FClickPass)) {
+                                ch_temp=true;
                             }
-                            i++;
+                            //
+                            FLuggOutputChBox.setEnabled(!ch_temp);
+                            FLuggOutputChBox.setSelected(ch_temp);
+                            //
+                            int ch_w = FOwner.getCheckweightOfLuggage(FClickPass);
+                            FCheckWeight.setText(Integer.toString(ch_w));
+                            //
+                            updateRespBar();
+                            //
                         }
-                        //
-                        if(!FOwner.isLuggPutOut(FClickPass)){
-                            FLuggOutput.setEnabled(true);
-                            FLuggOutput.setSelected(false);
-                        }
-                        //
-                        updateRespBar();
                         //
                     }
+                    catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null,
+                                                     ex.getLocalizedMessage(),
+                                                     "Error",
+                                                     JOptionPane.ERROR_MESSAGE);
+                    }
+                    //
                 }
             }
                     
@@ -219,7 +235,7 @@ public class ContentPane extends JPanel {
     private JTextArea FName;
     private JTextArea FSirname;
     private JTextArea FCheckWeight;
-    private JCheckBox FLuggOutput;
+    private JCheckBox FLuggOutputChBox;
     //
     private String FClickPass;
     private DialogFrame FOwner;
