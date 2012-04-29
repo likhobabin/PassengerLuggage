@@ -172,9 +172,11 @@ public class XMLLoader {
         //
         factory.setIgnoringElementContentWhitespace(true);
         //
-        String xsd_path = new File(".").getCanonicalPath() + "/data/out/flights.xsd";
+        String xsd_path = new File(".").getCanonicalPath() 
+                + DataBaseProcess.FConfigProps.getProperty("pl.xsd_path");
         InputStream fis = new FileInputStream(xsd_path);
-        InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+        InputStreamReader isr = new InputStreamReader(fis, 
+                DataBaseProcess.FConfigProps.getProperty("pl.charset"));
         //
         SchemaFactory schema_fact = SchemaFactory.newInstance(W3C_XML_SCHEMA);
         StreamSource ssisr = new StreamSource(isr);

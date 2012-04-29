@@ -68,13 +68,13 @@ class DataCreator {
         //
         try {
             //
+            xml_data_map = __xml_loader.loadDoc();
             if (!DataBaseProcess.isTbExist(conn)) {
                 //
                 Statement stmnt;
                 stmnt = conn.createStatement();
                 stmnt.execute(create_tb_query);
                 //
-                xml_data_map = __xml_loader.loadDoc();
                 Iterator<String> keyIt = xml_data_map.keySet().iterator();
                 //
                 while (keyIt.hasNext()) {

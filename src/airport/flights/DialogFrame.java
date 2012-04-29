@@ -132,29 +132,31 @@ public class DialogFrame extends JFrame implements ActionListener {
                     //
                 } else if (((JMenuItem) ev_src).equals(FGenerateXml)) {
                     //
-                    FDataCreator.generateXML();
-                    //
-                    if (bTableExist && bServerStarted) {
-                        bTableExist = false;
-                        DataBaseProcess.deleteTb();
-                        FCreateDelTb.setText("Create Table");
+                    if (bTableExist) {
+                        if (bServerStarted) {
+                            //
+                            bTableExist = false;
+                            DataBaseProcess.deleteTb();
+                            FCreateDelTb.setText("Create Table");
+                            //
+                        } else {
+                            //
+                            msg = "Can't generate xml\nStart Server";
+                            msg_descr = "Error";
+                            msg_type = JOptionPane.ERROR_MESSAGE;
+                            //
+                            throw new Exception();
+                        }
                     }
                     //
-                    msg = "Can't generate xml";
-                    msg_descr = "Error";
-                    msg_type = JOptionPane.ERROR_MESSAGE;
-                    //
+                    FDataCreator.generateXML();
                     bXmlGenerated = true;
                     //
                 } else if (((JMenuItem) ev_src).equals(FCreateDelTb)) {
                     //
                     if (!bXmlGenerated || !bServerStarted) {
                         //
-                        if (FCreateDelTb.getText().equals("Delete Table")) {
-                            msg = "Can't Delete Table";
-                        } else if (FCreateDelTb.getText().equals("Create Table")) {
-                            msg = "Can't Create Table";
-                        }
+                        msg = "Can't " + FCreateDelTb.getText();
                         //
                         if (!bXmlGenerated) {
                             msg += "\n\tGenerate Xml doc ";
@@ -215,7 +217,7 @@ public class DialogFrame extends JFrame implements ActionListener {
         FStartStopServer.addActionListener(this);
         FGenerateXml = new JMenuItem("Generate xml-doc");
         FGenerateXml.addActionListener(this);
-        FCreateDelTb = new JMenuItem("Create Data Base");
+        FCreateDelTb = new JMenuItem("Create Table");
         FCreateDelTb.addActionListener(this);
         FExit = new JMenuItem("Exit");
         FExit.addActionListener(this);
@@ -251,7 +253,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                                             Exception {
         //
         boolean bShowMsg = true;
-        String msg = "";
+        String msg = "Can't start/stop server";
         String msg_descr = "";
         int msg_type = JOptionPane.INFORMATION_MESSAGE;
         Pattern find_jar = Pattern.compile("derbyrun\\.jar$");
@@ -298,37 +300,41 @@ public class DialogFrame extends JFrame implements ActionListener {
                         if (matcher.find()) {
                             FServerJarPath = jar_file_path;
                         } else {
-                            msg += "Incorrect .jar";
+                            msg += "\nIncorrect .jar";
                             msg_type = JOptionPane.ERROR_MESSAGE;
                             msg_descr += "Warrning";
                             //
                             FFileCh.setSelectedFile(null);
+                            throw new Exception();
                         }
                     }
                     //
                     if (returnVal == JFileChooser.CANCEL_OPTION) {
                         bShowMsg = false;
+                        throw new Exception("Chose cancel btn");
                     }
                 }
-                matcher = find_jar.matcher(FServerJarPath);
-                if (matcher.find()) {
-                    DataBaseProcess.startServer(FServerJarPath);
-                    bServerStarted = true;
-                    //
-                    msg += "Succeed Starting Server";
-                    msg_type = JOptionPane.INFORMATION_MESSAGE;
-                    msg_descr += "Information";
-                    //
-                    FStartStopServer.setText("Stop Server");
-                }
+                //
+                DataBaseProcess.startServer(FServerJarPath);
+                bServerStarted = true;
+                //
+                msg += "Succeed Starting Server";
+                msg_type = JOptionPane.INFORMATION_MESSAGE;
+                msg_descr += "Information";
+                //
+                FStartStopServer.setText("Stop Server");
             }
         }
         catch (IOException ex) {
             ex.printStackTrace();
-            msg += "Can't start/stop server";
+            //
             msg_type = JOptionPane.ERROR_MESSAGE;
-            msg_descr += "Warrning";
+            msg_descr += "Error";
             FFileCh.setSelectedFile(null);
+        }
+        //
+        catch(Exception ex){
+            ex.printStackTrace();
         }
         //
         if (bShowMsg) {
