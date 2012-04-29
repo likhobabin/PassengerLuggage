@@ -43,8 +43,6 @@ public class DataBaseProcess {
                     String pass_path_nm = passIt.next();
                     db_process.getCheckedWeightBy(pass_path_nm);                    
                 }
-                
-                DataBaseProcess.deleteTb();
                 //
             }
             catch (SQLException ex) {

@@ -155,7 +155,6 @@ public class XMLCreator {
         //
         rootEl.setAttribute("xmlns:xsi", 
                 "http://www.w3.org/20x00x01/XMLSchema-instance");
-        rootEl.setAttribute("xsi:noNamespaceSchemaLocation", "flights.xsd");
         //
         int count = pathNamesSz;
         int cFlightHasPass=-1;

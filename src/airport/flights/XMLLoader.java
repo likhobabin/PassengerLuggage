@@ -6,6 +6,9 @@ package airport.flights;
 //
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 //
 import java.util.Map;
 import java.util.HashMap;
@@ -19,10 +22,16 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Schema;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 //
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 //
 /**
  *
@@ -78,42 +87,8 @@ public class XMLLoader {
     public Map<String , PassengerInfo > loadDoc( )
             throws Exception {
         //
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        Document doc = getParsedDoc();
         //
-        factory.setValidating(true);
-        //Specifies that the parser produced by this code will provide 
-        //support for XML namespaces. 
-        //By default the value of this is set to false
-        factory.setNamespaceAware(true);
-        final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/"
-                + "schemaLanguage";
-        final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-        factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
-        factory.setIgnoringElementContentWhitespace(true);
-        //
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        //
-        builder.setErrorHandler(new ErrorHandler() {
-
-            public void warning(SAXParseException exception)
-                    throws SAXException {
-                System.err.println("warning: " + exception);
-            }
-            //
-
-            public void error(SAXParseException exception)
-                    throws SAXException {
-                throw new SAXException("error: " + exception);
-            }
-            //
-
-            public void fatalError(SAXParseException exception)
-                    throws SAXException {
-                throw new SAXException("fatalerror: " + exception);
-            }
-        });
-        //
-        Document doc = builder.parse(new File(FXMLPath));
         Element root = doc.getDocumentElement();
         NodeList flights = root.getChildNodes();
         //
@@ -125,6 +100,7 @@ public class XMLLoader {
         return(Collections.unmodifiableMap(FPassInfoMap));
     }
     //
+    
     private static int getChildCount(Object __parent){
         int child_count;
         Node in_node = (Node)(__parent);
@@ -135,6 +111,7 @@ public class XMLLoader {
         return(child_count);
     }
     //
+    
     private static Element getChild(NodeList __childs, int __idx) 
             throws Exception {
         //
@@ -151,6 +128,7 @@ public class XMLLoader {
         //
     }
     //
+    
     private void processFlight(Node __flight)
             throws Exception {
         System.out.println("Flight number: " + 
@@ -180,6 +158,58 @@ public class XMLLoader {
         return(null);
     }
     //
+    
+    private Document getParsedDoc( ) throws ParserConfigurationException,
+                                          SAXException,
+                                          IOException {         
+        //
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        //
+        factory.setValidating(false);
+        factory.setNamespaceAware(true);
+        //
+        final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+        //
+        factory.setIgnoringElementContentWhitespace(true);
+        //
+        String xsd_path = new File(".").getCanonicalPath() + "/data/out/flights.xsd";
+        InputStream fis = new FileInputStream(xsd_path);
+        InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+        //
+        SchemaFactory schema_fact = SchemaFactory.newInstance(W3C_XML_SCHEMA);
+        StreamSource ssisr = new StreamSource(isr);
+        Schema xsd_schema = schema_fact.newSchema(new Source[] { ssisr });
+        //
+        factory.setSchema(xsd_schema);
+        //
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        //
+        builder.setErrorHandler(new ErrorHandler() {
+
+            public void warning(SAXParseException exception)
+                    throws SAXException {
+                System.err.println("warning: " + exception);
+            }
+            //
+
+            public void error(SAXParseException exception)
+                    throws SAXException {
+                throw new SAXException("error: " + exception);
+            }
+            //
+
+            public void fatalError(SAXParseException exception)
+                    throws SAXException {
+                throw new SAXException("fatalerror: " + exception);
+            }
+        });
+        //        
+        return(builder.parse(new File(FXMLPath)));
+        //
+    } 
+    
     private Map<String , PassengerInfo > FPassInfoMap;
     private String FXMLPath;
+    //
 }
+//
