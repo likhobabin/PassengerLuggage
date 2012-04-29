@@ -68,7 +68,7 @@ class DataCreator {
         //
         try {
             //
-            xml_data_map = __xml_loader.loadDoc();
+            xml_data_map = __xml_loader.loadDoc(false);
             if (!DataBaseProcess.isTbExist(conn)) {
                 //
                 Statement stmnt;

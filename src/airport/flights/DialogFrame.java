@@ -11,6 +11,7 @@ package airport.flights;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
@@ -20,6 +21,7 @@ import java.awt.event.WindowAdapter;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Map;
+import java.util.Set;
 //
 import java.io.File;
 import java.io.IOException;
@@ -68,21 +70,22 @@ public class DialogFrame extends JFrame implements ActionListener {
         bXmlGenerated = false;
         bTableExist = false;
         FDataCreator = new DataCreator();
-        //
-        BoxLayout fr_layout = new BoxLayout(getContentPane(),
-                                            BoxLayout.Y_AXIS);
-        getContentPane().setLayout(fr_layout);
         //          
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //
         setIconImage(createImageIcon("mf_airoport.png"));
         setJMenuBar(createMenuBar());
         //
+        getContentPane().setLayout(new BorderLayout());
+        FContentPane = new ContentPane();
+        add(FContentPane, BorderLayout.CENTER);
+        setSize(700, 400);
+        //
         pack();
         //
         Toolkit toolKit = Toolkit.getDefaultToolkit();
         Dimension screenSz = toolKit.getScreenSize();
-        Dimension frameSz = this.getPreferredSize();
+        Dimension frameSz = getPreferredSize();
         Dimension frLoc = new Dimension(
                 (int) (screenSz.getWidth() / 2 - frameSz.getWidth() / 2),
                 (int) (screenSz.getHeight() / 2 - frameSz.getHeight() / 2));
@@ -135,9 +138,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                     if (bTableExist) {
                         if (bServerStarted) {
                             //
-                            bTableExist = false;
-                            DataBaseProcess.deleteTb();
-                            FCreateDelTb.setText("Create Table");
+                            doDeleteTable();
                             //
                         } else {
                             //
@@ -207,6 +208,22 @@ public class DialogFrame extends JFrame implements ActionListener {
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(wev);
         //
     }
+    //
+    
+    void putoutLuggageTo(String __pathname){
+        if(!FPassengerInfo.isEmpty() && FPassengerInfo.containsKey(__pathname)){
+            FPassengerInfo.get(__pathname).LuggOutput = true;
+        }
+    }
+    //
+    
+    boolean isLuggPutOut(String __pathname){
+        if(!FPassengerInfo.isEmpty() && FPassengerInfo.containsKey(__pathname)){
+            return(FPassengerInfo.get(__pathname).LuggOutput);
+        }
+        return(false);
+    }
+    //
 
     private JMenuBar createMenuBar() {
         //
@@ -253,7 +270,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                                             Exception {
         //
         boolean bShowMsg = true;
-        String msg = "Can't start/stop server";
+        String msg = "";
         String msg_descr = "";
         int msg_type = JOptionPane.INFORMATION_MESSAGE;
         Pattern find_jar = Pattern.compile("derbyrun\\.jar$");
@@ -300,6 +317,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                         if (matcher.find()) {
                             FServerJarPath = jar_file_path;
                         } else {
+                            msg += "Can't start/stop server";
                             msg += "\nIncorrect .jar";
                             msg_type = JOptionPane.ERROR_MESSAGE;
                             msg_descr += "Warrning";
@@ -328,6 +346,7 @@ public class DialogFrame extends JFrame implements ActionListener {
         catch (IOException ex) {
             ex.printStackTrace();
             //
+            msg += "Can't start/stop server";
             msg_type = JOptionPane.ERROR_MESSAGE;
             msg_descr += "Error";
             FFileCh.setSelectedFile(null);
@@ -355,21 +374,38 @@ public class DialogFrame extends JFrame implements ActionListener {
         if (!FPassengerInfo.isEmpty()) {
             FPassengerInfo.clear();
         }
+        //
+        FContentPane.clearAll();
+        pack();
     }
     //
 
     private void doCreateTable() throws Exception {
         FPassengerInfo = FDataCreator.createDataBase();
+        Set<String > pass_list = FPassengerInfo.keySet();
+        FContentPane.fillList(pass_list);
+        FContentPane.setOwner(this);
+        updatePassengerList();
+        //
         bTableExist = true;
         FCreateDelTb.setText("Delete Table");
     }
     //
+    
+    private void updatePassengerList( ){
+        FContentPane.updateList();
+        pack();
+    }
+    //
+    
     private String FServerJarPath;
     private JMenuItem FStartStopServer;
     private JMenuItem FGenerateXml;
     private JMenuItem FCreateDelTb;
     private JMenuItem FExit;
     private JFileChooser FFileCh;
+    //
+    private ContentPane FContentPane;
     //
     private boolean bServerStarted;
     private boolean bXmlGenerated;

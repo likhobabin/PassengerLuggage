@@ -58,7 +58,7 @@ public class XMLLoader {
                 + "flights.xml";
         XMLLoader xml_loader = new XMLLoader(outxml_pf);
         //
-        xml_loader.loadDoc();
+        xml_loader.loadDoc(true);
         }
         catch(IOException ex){
             ex.printStackTrace();
@@ -84,7 +84,7 @@ public class XMLLoader {
     }
     //
     
-    public Map<String , PassengerInfo > loadDoc( )
+    public Map<String , PassengerInfo > loadDoc(boolean __unmodif)
             throws Exception {
         //
         Document doc = getParsedDoc();
@@ -97,7 +97,10 @@ public class XMLLoader {
             processFlight(c_flight);
         }
         //
+        if(__unmodif){
         return(Collections.unmodifiableMap(FPassInfoMap));
+        }
+        return(FPassInfoMap);
     }
     //
     
