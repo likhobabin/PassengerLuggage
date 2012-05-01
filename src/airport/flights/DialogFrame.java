@@ -67,7 +67,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                 //
                 try {
                     //
-                    dlgFrame = new DialogFrame("Airoport");
+                    dlgFrame = new DialogFrame("Airport");
                     //
                 }
                 catch (Exception ex) {
