@@ -73,7 +73,7 @@ public class ContentPane extends JPanel {
         FCheckWeight = new JTextArea();
         FCheckWeight.setColumns(20);
         FLuggOutputChBox = new JCheckBox();
-        FLuggOutputChBox.setText("Багаж ушёл");
+        FLuggOutputChBox.setText("Багаж выдан");
         FLuggOutputChBox.setEnabled(false);
         FLuggOutputChBox.setAlignmentX(Component.RIGHT_ALIGNMENT);
         lugg_panel.add(FCheckWeight);
@@ -98,7 +98,8 @@ public class ContentPane extends JPanel {
         FSurname.setBorder(createTextFieldBorder("Surname", Color.BLACK));
         FSurname.setEditable(false);
         FSurname.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        lugg_panel.setBorder(createTextFieldBorder("Luggage Checkweight kg.", Color.BLACK));
+        lugg_panel.setBorder(createTextFieldBorder("Luggage Checked weight kg.", 
+                                                   Color.BLACK));
         lugg_panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         //
         FResponseBar.add(FName);

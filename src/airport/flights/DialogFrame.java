@@ -8,6 +8,9 @@ package airport.flights;
  *
  * @author ilya
  */
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+//
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Dimension;
@@ -60,6 +63,7 @@ public class DialogFrame extends JFrame implements ActionListener {
             String ex_msg=null;
             public void run() {
                 DialogFrame dlgFrame = null;
+                Throwable thr=null;
                 //
                 try {
                     //
@@ -67,7 +71,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                     //
                 }
                 catch (Exception ex) {
-                    ex.printStackTrace();
+                    thr=ex;
                     ex_msg = ex.getLocalizedMessage();
                 }                
                 //
@@ -76,6 +80,10 @@ public class DialogFrame extends JFrame implements ActionListener {
                                                   ex_msg,
                                                   "Error",
                                                   JOptionPane.ERROR_MESSAGE);
+                    if (null != thr) {
+                        doWriteStackTrace(thr, "debug.txt");
+                    }
+                    //
                 }
             }
             //
@@ -115,6 +123,7 @@ public class DialogFrame extends JFrame implements ActionListener {
             //
             public void windowClosing(WindowEvent __cl_ev) {
                 //
+                Throwable thr=null;
                 try {
                     //
                     stopServer();
@@ -122,12 +131,16 @@ public class DialogFrame extends JFrame implements ActionListener {
                 }
                 catch (Exception ex) {
                     //
-                    ex.printStackTrace();
+                    thr = ex;
                     JOptionPane.showMessageDialog(null,
                                                   ex.getLocalizedMessage(),
                                                   "Error",
                                                   JOptionPane.ERROR_MESSAGE);
                     //
+                }
+                //
+                if (null != thr) {
+                    doWriteStackTrace(thr, "debug.txt");
                 }
                 //
             }
@@ -210,44 +223,35 @@ public class DialogFrame extends JFrame implements ActionListener {
             //
         }
         catch (URISyntaxException ex) {
-            ex.printStackTrace();
             thr = ex;
         }
         catch (SAXParseException ex) {
-            ex.printStackTrace();
             thr = ex;
         }
         catch (ParserConfigurationException ex) {
-            ex.printStackTrace();
             thr = ex;
         }
         catch (SAXException ex) {
-            ex.printStackTrace();
             thr = ex;
         }
         catch (TransformerConfigurationException ex) {
-            ex.printStackTrace();
             thr = ex;
         }
         catch (TransformerException ex) {
-            ex.printStackTrace();
             thr = ex;
         }
         catch (SQLException ex) {
-            for (Throwable t : ex) {
-                t.printStackTrace();
-            }
             thr = ex;
         }
         catch (Exception ex) {
-            ex.printStackTrace();
             thr = ex;
         }
         //
         if (thr != null) {
             msg = thr.getLocalizedMessage();
             msg_descr = "Error";
-            msg_type = JOptionPane.ERROR_MESSAGE;
+            msg_type = JOptionPane.ERROR_MESSAGE;       
+            doWriteStackTrace(thr, "debug.txt");
         }
         //
         if (msg != null) {
@@ -335,6 +339,19 @@ public class DialogFrame extends JFrame implements ActionListener {
         //
     }
     //
+    
+    private static void doWriteStackTrace(Throwable __thr, String __df_path) {
+        //
+        try {
+            FileOutputStream fos = new FileOutputStream(__df_path);
+            PrintStream ps = new PrintStream(fos);
+            __thr.printStackTrace(ps);
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        //
+    }
 
     private static Image createImageIcon(String path) {
         java.net.URL imgURL = DialogFrame.class.getResource(path);
@@ -355,6 +372,7 @@ public class DialogFrame extends JFrame implements ActionListener {
         String msg_descr = null;
         int msg_type = JOptionPane.INFORMATION_MESSAGE;
         Pattern find_jar = Pattern.compile("derbyrun\\.jar$");
+        Throwable thr=null;
         try {
             //
             if (bServerStarted) {
@@ -423,7 +441,7 @@ public class DialogFrame extends JFrame implements ActionListener {
             }
         }
         catch (IOException ex) {
-            ex.printStackTrace();
+            thr = ex;
             //
             msg = "\nError " + ex.getLocalizedMessage();
             msg_type = JOptionPane.ERROR_MESSAGE;
@@ -433,9 +451,13 @@ public class DialogFrame extends JFrame implements ActionListener {
         }
         //
         catch(Exception ex){
-            ex.printStackTrace();
+            thr = ex;
             FFileCh.setSelectedFile(null);
             msg = "\nError " + ex.getMessage();
+        }
+        //
+        if(null != thr){
+        doWriteStackTrace(thr, "debug.txt");
         }
         //
         JOptionPane.showMessageDialog(this,

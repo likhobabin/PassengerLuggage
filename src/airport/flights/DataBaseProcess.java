@@ -6,6 +6,7 @@ package airport.flights;
 //
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.net.URISyntaxException;
@@ -188,14 +189,16 @@ public class DataBaseProcess {
     private static Properties loadProperties(String __config_props_fnm)
             throws IOException, URISyntaxException {
         //
-        URL prop_url = DataBaseProcess.class.getResource(__config_props_fnm);
-        FileInputStream fis = new FileInputStream(new File(prop_url.toURI()));
-        InputStreamReader is = new InputStreamReader(fis, "UTF8");
+//        URL prop_url = DataBaseProcess.class.getResource(__config_props_fnm);
+//        FileInputStream fis = new FileInputStream(new File(prop_url.toURI()));
+        InputStream is = DataBaseProcess.class.getResourceAsStream(__config_props_fnm);
+//        InputStreamReader is = new InputStreamReader(fis, "UTF8");
+        InputStreamReader isr = new InputStreamReader(is, "UTF8");
         Properties out_props = new Properties();
         //
         out_props.load(is);
         is.close();
-        fis.close();
+        isr.close();
         //
         return (out_props);
         //
