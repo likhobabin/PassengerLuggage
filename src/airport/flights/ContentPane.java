@@ -34,6 +34,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 //
+/** 
+ * <code>ConetentPane</code> shows all of necessary information of passengers:
+ * <UL>
+ * <LI>Pathname List.
+ * <LI>Luggage checked weight.
+ * <LI>Luggage state. 
+ * </UL>
+ * 
+ */
 
 public class ContentPane extends JPanel {
     //
@@ -56,8 +65,8 @@ public class ContentPane extends JPanel {
         FResponseBar = new JPanel( );
         FName = new JTextArea();
         FName.setColumns(20);
-        FSirname = new JTextArea();
-        FSirname.setColumns(20);
+        FSurname = new JTextArea();
+        FSurname.setColumns(20);
         JPanel lugg_panel = new JPanel();
         BoxLayout lp_layout = new BoxLayout(lugg_panel, BoxLayout.Y_AXIS);
         lugg_panel.setLayout(lp_layout);
@@ -86,14 +95,14 @@ public class ContentPane extends JPanel {
         FName.setBorder(createTextFieldBorder("Name", Color.BLACK));
         FName.setEditable(false);
         FName.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        FSirname.setBorder(createTextFieldBorder("Sirname", Color.BLACK));
-        FSirname.setEditable(false);
-        FSirname.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        FSurname.setBorder(createTextFieldBorder("Surname", Color.BLACK));
+        FSurname.setEditable(false);
+        FSurname.setAlignmentX(Component.RIGHT_ALIGNMENT);
         lugg_panel.setBorder(createTextFieldBorder("Luggage Checkweight kg.", Color.BLACK));
         lugg_panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         //
         FResponseBar.add(FName);
-        FResponseBar.add(FSirname);
+        FResponseBar.add(FSurname);
         FResponseBar.add(lugg_panel);     
         //
         //FRequestBar.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -122,7 +131,7 @@ public class ContentPane extends JPanel {
     void clearAll(){
         FRequestList.clear();
         FName.setText("");
-        FSirname.setText("");
+        FSurname.setText("");
         FCheckWeight.setText("");
         FLuggOutputChBox.setEnabled(false);
         FLuggOutputChBox.setSelected(false);
@@ -163,7 +172,7 @@ public class ContentPane extends JPanel {
                                     FName.setText(word);
                                 }
                                 if (i == 1) {
-                                    FSirname.setText(word);
+                                    FSurname.setText(word);
                                 }
                                 i++;
                             }
@@ -233,7 +242,7 @@ public class ContentPane extends JPanel {
     
     private JPanel FResponseBar;
     private JTextArea FName;
-    private JTextArea FSirname;
+    private JTextArea FSurname;
     private JTextArea FCheckWeight;
     private JCheckBox FLuggOutputChBox;
     //

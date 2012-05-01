@@ -26,14 +26,23 @@ import java.net.URISyntaxException;
 
 import java.util.StringTokenizer;
 //
-
+/**
+ * <code>ProperNameExtract</code> extracts and remains a proper name list 
+ * from input file.
+ */
 public class ProperNameExtract {
     //
     public ProperNameExtract( ) {
         FStorage = getStorage();
     }
     //
-    
+    /**
+     * 
+     * @param __file_path Input file
+     * @param __charSet Charset of input file
+     * @throws IOException
+     * @throws URISyntaxException 
+     */
     public void extract(String __file_path, String __charSet) 
             throws IOException, URISyntaxException {
         //

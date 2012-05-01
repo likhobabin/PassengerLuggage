@@ -13,24 +13,28 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- *
- * @author ilya
+ *<code>DataCreator</code> represents an object that combines a XMLCreator, 
+ * a XMLLoader and a DataProcess object capabilities to create xml, to load xml
+ * and to safe the database necessary data.   
  */
 class DataCreator {
 
     DataCreator() throws Exception {
         String f_names_path =
                 DataBaseProcess.FConfigProps.getProperty("pl.names_path");
-        String f_sirnames_path =
-                DataBaseProcess.FConfigProps.getProperty("pl.sirnames_path");
+        String f_surnames_path =
+                DataBaseProcess.FConfigProps.getProperty("pl.surnames_path");
         String curr_dir_path = new File(".").getCanonicalPath();
         //
         FXmlCreator = getXmlCreator(curr_dir_path + f_names_path,
-                                    curr_dir_path + f_sirnames_path);
+                                    curr_dir_path + f_surnames_path);
     }
     //
-    
-    void generateXML() throws Exception {
+    /**
+     * Generate an xml-doc and safe it in the file
+     * @throws Exception 
+     */
+    public void generateXML() throws Exception {
         String f_xml_path =
                 DataBaseProcess.FConfigProps.getProperty("pl.xml_path");
         String curr_dir_path = new File(".").getCanonicalPath();
@@ -38,8 +42,14 @@ class DataCreator {
         FXmlCreator.wrXMLTree(curr_dir_path + f_xml_path);
         //
     }
-
-    Map<String , PassengerInfo > createDataBase() throws Exception {
+    //
+    /**
+     * Using generated xml-doc data create database and return 
+     * map object with passengers data. 
+     * @return
+     * @throws Exception 
+     */
+    public Map<String , PassengerInfo > createDataBase() throws Exception {
         String f_xml_path =
                 DataBaseProcess.FConfigProps.getProperty("pl.xml_path");
         String curr_dir_path = new File(".").getCanonicalPath();
@@ -104,11 +114,11 @@ class DataCreator {
     //
 
     private XMLCreator getXmlCreator(String f_nms_path,
-            String f_sirnms_path) throws Exception {
+            String f_surnms_path) throws Exception {
         String char_set =
                 DataBaseProcess.FConfigProps.getProperty("pl.charset");
         return ((FXmlCreator == null)
-                ? new XMLCreator(f_nms_path, f_sirnms_path, char_set)
+                ? new XMLCreator(f_nms_path, f_surnms_path, char_set)
                 : FXmlCreator);
     }
     //

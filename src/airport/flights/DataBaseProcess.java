@@ -23,11 +23,32 @@ import java.util.Properties;
 import java.util.Collections;
 import java.util.Iterator;
 /**
- *
- * @author ilya
+ *<code>DataBaseProcess</code> provides the following capabilities:
+ *<UL>
+ *<LI>Controlling state of data base server.</LI>
+ *<LI>Creating and deleting table.</LI>
+ *<LI>Processing simple query setting in task.</LI>
+ *</UL>
+ *<code>DataBaseProcess</code> uses Apache Derby Database. All of needed 
+ *database settings are in the property file:
+ *<UL>
+ *<LI>JDBC driver name.</LI>
+ *<LI>URL to connect server database.</LI>
+ *<LI>Name of creating table.</LI>
+ *</UL>
+ *This file also has a following settings:  
+ *<UL>
+ *<LI>Path to the files that contain names and surnames to generate xml-doc.</LI>
+ *<LI>Using charset of above files.</LI>
+ *<LI>Path to output xml-doc.</LI>
+ *</UL>
  */
 public class DataBaseProcess {
     //
+    /**
+     * @param __derby_lib_path
+     * @throws IOException 
+     */
     public static void startServer(String __derby_lib_path)
             throws IOException {
         if(null == __derby_lib_path){
@@ -49,6 +70,14 @@ public class DataBaseProcess {
                 + " server shutdown");
     }
     // 
+    /**
+     * Connect to database
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws IOException
+     * @throws URISyntaxException 
+     */
 
     public static Connection loadDB()
             throws ClassNotFoundException,
@@ -58,8 +87,6 @@ public class DataBaseProcess {
         //
         String db_driver = FConfigProps.getProperty("jdbc.driver");
         String db_url = FConfigProps.getProperty("jdbc.url");
-        String db_user = FConfigProps.getProperty("jdbc.username");
-        String pwd = FConfigProps.getProperty("jdbc.password");
         //
         Connection conn;
         /*
@@ -68,12 +95,18 @@ public class DataBaseProcess {
          * problem
          */
         Class.forName(db_driver);
-        conn = DriverManager.getConnection(db_url, db_user, pwd);
+        conn = DriverManager.getConnection(db_url);
         //
         return (conn);
     }
     //    
-
+    /**
+     * Delete table 
+     * @throws SQLException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws Exception 
+     */
     public static void deleteTb()
             throws SQLException,
             IOException,
@@ -96,7 +129,12 @@ public class DataBaseProcess {
         }
     }
     //
-    
+    /**
+     * Made a query to return a checked weight of passenger luggage
+     * @param __find_id Id of passenger
+     * @return
+     * @throws Exception 
+     */
     public static int getCheckedWeightBy(String __find_id) throws Exception {
         String tbName = FConfigProps.getProperty("table.name");
         Connection conn = DataBaseProcess.loadDB();

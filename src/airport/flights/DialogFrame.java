@@ -44,6 +44,12 @@ import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 //
+/**
+ * <code>DialogFrame</code> is a simple graphic application responsible of making
+ * all of necessary tasks: starting/stopping database server, 
+ * generating a xml-doc, creating/deleting database table and 
+ * processing passenger data.
+ */
 
 public class DialogFrame extends JFrame implements ActionListener {
     //

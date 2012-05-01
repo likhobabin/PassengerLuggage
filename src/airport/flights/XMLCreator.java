@@ -4,14 +4,14 @@
  */
 package airport.flights;
 
-/**
- *
- * @author Ilya
- */
-import java.io.*;
+import java.io.IOException;
+import java.io.File;
+import java.io.Writer;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
+import java.io.StringWriter;
 //
 import java.net.URISyntaxException;
-import java.net.URL;
 //
 import java.util.Random;
 //
@@ -30,52 +30,25 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.TransformerException;
-//import org.xml.sax.SAXParseException;
 //
 
+/**
+ * A <code>XMLCreator</code> represent a generator of xml-docs 
+ * of desired format that is reported by task.  
+ */
 public class XMLCreator {
     //
-
-    public static void main(String[] args) {
-        try {
-            //
-            String data_dir = new File(".").getCanonicalPath()
-                    + System.getProperty("file.separator") + "data"
-                    + System.getProperty("file.separator");
-            String in_names_path = data_dir + "in" + System.getProperty("file.separator")
-                    + "names.txt";
-            String in_sirnames_path = data_dir + "in" + System.getProperty("file.separator")
-                    + "sirnames.txt";
-            String outxml_fpath = data_dir + "out" + System.getProperty("file.separator")
-                    + "flights.xml";
-            XMLCreator xml_creator = new XMLCreator(in_names_path, in_sirnames_path, "UTF8");
-            //
-            xml_creator.wrXMLTree(outxml_fpath);
-            //
-        } 
-        catch (IOException ex) {
-            ex.printStackTrace();
-        } 
-        catch (URISyntaxException ex) {
-            ex.printStackTrace();
-        } 
-        catch(ParserConfigurationException ex){
-            ex.printStackTrace();
-        } 
-        catch(TransformerConfigurationException ex) {
-            ex.printStackTrace();
-        } 
-        catch(TransformerException ex) {
-            ex.printStackTrace();
-        }
-        catch (Throwable ex) {
-            ex.printStackTrace();
-        } 
-    }
-    //
-    
+    /**
+     * <code>XMLCreator</code> uses a <code>ProperNameExtract</code> objects
+     * to extract string list of proper name words
+     * @param __names_path Path to file with names
+     * @param __surname_path Path to file with surname
+     * @param __charSet Charset of input files 
+     * @throws IOException
+     * @throws URISyntaxException 
+     */
     public XMLCreator(String __names_path, 
-                      String __sirname_path, 
+                      String __surname_path, 
                       String __charSet) 
             throws IOException, URISyntaxException {
         FCharSet = __charSet;
@@ -84,7 +57,7 @@ public class XMLCreator {
         FNames.extract(__names_path, FCharSet);
         
         FSirnames = new ProperNameExtract( );
-        FSirnames.extract(__sirname_path, FCharSet);
+        FSirnames.extract(__surname_path, FCharSet);
     }
     //
     
@@ -92,7 +65,15 @@ public class XMLCreator {
         return(FCharSet);
     }
     //
-    
+    /**
+     * 
+     * @param __file_path Path to writing file 
+     * @throws IOException
+     * @throws URISyntaxException
+     * @throws ParserConfigurationException
+     * @throws TransformerConfigurationException
+     * @throws TransformerException 
+     */
     public void wrXMLTree(String __file_path) 
             throws IOException, URISyntaxException, 
                    ParserConfigurationException,

@@ -34,8 +34,9 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 //
 /**
- *
- * @author Ilya
+ *<code>PassengerInfo</code> represents a simple structure to store id of
+ * passenger and remains state of passenger luggage offloading.
+ * 
  */
 class PassengerInfo{
     String Id;
@@ -47,43 +48,22 @@ class PassengerInfo{
     }
 }
 //
-
-public class XMLLoader {
-    public static void main(String[] args) {
-        try{
-        String data_dir = new File(".").getCanonicalPath()
-                + System.getProperty("file.separator") + "data"
-                + System.getProperty("file.separator");
-        String outxml_pf = data_dir + "out" + System.getProperty("file.separator")
-                + "flights.xml";
-        XMLLoader xml_loader = new XMLLoader(outxml_pf);
-        //
-        xml_loader.loadDoc(true);
-        }
-        catch(IOException ex){
-            ex.printStackTrace();
-        }
-        catch(SAXParseException ex){
-            ex.printStackTrace();
-        }
-        catch(ParserConfigurationException ex){
-            ex.printStackTrace();
-        }
-        catch(SAXException ex){
-            ex.printStackTrace();
-        }
-        catch(Exception ex){
-            ex.printStackTrace();
-        }
-    }
-    //
-    
+/**
+ * <code>XMLLoader</code> loads information from input xml-doc and remains in 
+ * <code>HashMap</code> object
+ */
+public class XMLLoader {    
     public XMLLoader(String __xmlPath){
         FXMLPath = __xmlPath;
         FPassInfoMap = new HashMap<String, PassengerInfo >();
     }
     //
-    
+    /**
+     * Loads xml-doc and returns map with passenger information
+     * @param __unmodif Signs to return unmodifiable or not passenger info map  
+     * @return
+     * @throws Exception 
+     */
     public Map<String , PassengerInfo > loadDoc(boolean __unmodif)
             throws Exception {
         //
@@ -124,9 +104,6 @@ public class XMLLoader {
         }
         //
         Node child = (Node)__childs.item(__idx);
-        if(child instanceof Element && null != (Element)child){
-            System.out.println("Karaylll!!!");
-        }
         return((Element)child);
         //
     }
@@ -134,8 +111,6 @@ public class XMLLoader {
     
     private void processFlight(Node __flight)
             throws Exception {
-        System.out.println("Flight number: " + 
-                getAttrByName(__flight, "number"));
         //
         NodeList f_passengers = __flight.getChildNodes();
         for(int i=0x0; f_passengers.getLength()>i; i++){
@@ -149,6 +124,7 @@ public class XMLLoader {
             cPassInfo.Id = pass_lugg.getAttribute("id");
             FPassInfoMap.put(pass_nm, cPassInfo);
         }
+        //
     }
     //
     
