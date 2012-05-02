@@ -30,6 +30,7 @@ import javax.swing.JCheckBox;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
@@ -70,10 +71,12 @@ public class ContentPane extends JPanel {
         JPanel lugg_panel = new JPanel();
         BoxLayout lp_layout = new BoxLayout(lugg_panel, BoxLayout.Y_AXIS);
         lugg_panel.setLayout(lp_layout);
+        FFlightNum = new JTextArea();
+        FFlightNum.setColumns(20);
         FCheckWeight = new JTextArea();
         FCheckWeight.setColumns(20);
         FLuggOutputChBox = new JCheckBox();
-        FLuggOutputChBox.setText("Багаж выдан");
+        FLuggOutputChBox.setText("Luggage was issued");
         FLuggOutputChBox.setEnabled(false);
         FLuggOutputChBox.setAlignmentX(Component.RIGHT_ALIGNMENT);
         lugg_panel.add(FCheckWeight);
@@ -98,12 +101,17 @@ public class ContentPane extends JPanel {
         FSurname.setBorder(createTextFieldBorder("Surname", Color.BLACK));
         FSurname.setEditable(false);
         FSurname.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        FFlightNum.setBorder(createTextFieldBorder("Flight Number", 
+                                                    Color.BLACK));
+        FFlightNum.setEditable(false);
+        FFlightNum.setAlignmentX(Component.RIGHT_ALIGNMENT);
         lugg_panel.setBorder(createTextFieldBorder("Luggage Checked weight kg.", 
                                                    Color.BLACK));
         lugg_panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         //
         FResponseBar.add(FName);
         FResponseBar.add(FSurname);
+        FResponseBar.add(FFlightNum);
         FResponseBar.add(lugg_panel);     
         //
         //FRequestBar.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -133,6 +141,7 @@ public class ContentPane extends JPanel {
         FRequestList.clear();
         FName.setText("");
         FSurname.setText("");
+        FFlightNum.setText("");
         FCheckWeight.setText("");
         FLuggOutputChBox.setEnabled(false);
         FLuggOutputChBox.setSelected(false);
@@ -186,6 +195,7 @@ public class ContentPane extends JPanel {
                             FLuggOutputChBox.setEnabled(!ch_temp);
                             FLuggOutputChBox.setSelected(ch_temp);
                             //
+                            FFlightNum.setText(FOwner.getFlightNumber(FClickPass));
                             int ch_w = FOwner.getCheckweightOfLuggage(FClickPass);
                             FCheckWeight.setText(Integer.toString(ch_w));
                             //
@@ -244,6 +254,7 @@ public class ContentPane extends JPanel {
     private JPanel FResponseBar;
     private JTextArea FName;
     private JTextArea FSurname;
+    private JTextArea FFlightNum;
     private JTextArea FCheckWeight;
     private JCheckBox FLuggOutputChBox;
     //

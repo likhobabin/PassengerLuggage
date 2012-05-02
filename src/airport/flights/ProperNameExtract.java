@@ -51,17 +51,21 @@ public class ProperNameExtract {
                 new InputStreamReader(is, __charSet));
         String in;
         //
-        while(null != (in = FReadFile.readLine())){
+        while (null != (in = FReadFile.readLine())) {            
             StringTokenizer strToken = new StringTokenizer(in);
             //
             while(strToken.hasMoreTokens()){
                 String checkStr=strToken.nextToken
-                        (" .,';:\"[]%\\—$()-+=*#@!~`&|/?><");
-                if(checkStr.matches(VALIDATE_REXP)){
-                    String[ ] temp = checkStr.split(" ");
-                    FStorage.add(checkStr);
+                        (".,{}';:\"[]%\\—$()-+=*#@!~`&|/?><");
+                String[] temp = checkStr.split("\\s");
+                for (String cWord : temp) {
+                    if (cWord.matches(VALIDATE_REXP)) {
+                        FStorage.add(cWord);
+                    }
+                    //
                 }
             }
+            //
         }
         //
     }

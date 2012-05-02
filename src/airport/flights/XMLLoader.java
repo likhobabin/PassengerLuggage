@@ -40,9 +40,11 @@ import org.xml.sax.InputSource;
  */
 class PassengerInfo{
     String Id;
+    String FlightNum;
     boolean LuggOutput;
     //
     public PassengerInfo(){
+        FlightNum="-1";
         Id = "-1";
         LuggOutput=false;
     }
@@ -113,10 +115,12 @@ public class XMLLoader {
             throws Exception {
         //
         NodeList f_passengers = __flight.getChildNodes();
-        for(int i=0x0; f_passengers.getLength()>i; i++){
+        for (int i = 0x0; f_passengers.getLength() > i; i++) {
+            PassengerInfo cPassInfo = new PassengerInfo();
+            //
+            cPassInfo.FlightNum = getAttrByName(__flight, "number");
             Element f_pass = getChild(f_passengers, i);
             //
-            PassengerInfo cPassInfo = new PassengerInfo();
             String pass_nm = f_pass.getAttribute("name");
             NodeList pass_luggs = f_pass.getChildNodes();
             Element pass_lugg = getChild(pass_luggs, 0x0);

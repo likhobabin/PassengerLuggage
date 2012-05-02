@@ -120,7 +120,7 @@ public class XMLCreator {
         Random f_num_rand = new Random();
         Random f_pass_count_rand = new Random();
         int maxFlightNum = 1000;
-        int pathNamesSz=0x0;
+        int pathNamesSz=FNames.getProperNameList().size();
         //
         if(FNames.getProperNameList().size()
                 >= FSirnames.getProperNameList().size()){

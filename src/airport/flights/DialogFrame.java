@@ -13,6 +13,7 @@ import java.io.PrintStream;
 //
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
@@ -39,6 +40,8 @@ import javax.swing.JMenuItem;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+//
+import javax.imageio.ImageIO;
 //
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
@@ -71,15 +74,26 @@ public class DialogFrame extends JFrame implements ActionListener {
                     //
                 }
                 catch (Exception ex) {
+                    ex.printStackTrace();
                     thr=ex;
                     ex_msg = ex.getLocalizedMessage();
                 }                
                 //
                 if (null != ex_msg) {
-                    JOptionPane.showMessageDialog(null,
-                                                  ex_msg,
-                                                  "Error",
-                                                  JOptionPane.ERROR_MESSAGE);
+                    if (MAXERRMSG >= ex_msg.length()) {
+                        JOptionPane.showMessageDialog(null,
+                                ex_msg,
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null,
+                                "Error happened: see debug.txt",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+
+                    }
+                    //
                     if (null != thr) {
                         doWriteStackTrace(thr, "debug.txt");
                     }
@@ -103,7 +117,7 @@ public class DialogFrame extends JFrame implements ActionListener {
         //          
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //
-        setIconImage(createImageIcon("mf_airoport.png"));
+        setIconImage(createIconImage("airport.png"));
         setJMenuBar(createMenuBar());
         //
         getContentPane().setLayout(new BorderLayout());
@@ -132,10 +146,19 @@ public class DialogFrame extends JFrame implements ActionListener {
                 catch (Exception ex) {
                     //
                     thr = ex;
-                    JOptionPane.showMessageDialog(null,
-                                                  ex.getLocalizedMessage(),
-                                                  "Error",
-                                                  JOptionPane.ERROR_MESSAGE);
+                    if (MAXERRMSG >= ex.getLocalizedMessage().length()) {
+                        JOptionPane.showMessageDialog(null,
+                                ex.getLocalizedMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null,
+                                "Error happened: see debug.txt",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+
+                    }
                     //
                 }
                 //
@@ -152,7 +175,7 @@ public class DialogFrame extends JFrame implements ActionListener {
         setVisible(true);
     }
     //
-
+    
     public void actionPerformed(ActionEvent ev) {
         Object ev_src = ev.getSource();
         Throwable thr = null;
@@ -202,10 +225,10 @@ public class DialogFrame extends JFrame implements ActionListener {
                         msg = "Can't " + FCreateDelTb.getText();
                         //
                         if (!bXmlGenerated) {
-                            msg = "\n\tGenerate Xml doc ";
+                            msg += "\nGenerate Xml doc ";
                         }
                         if (!bServerStarted) {
-                            msg = "\n\tStart server ";
+                            msg += "\nStart server ";
                         }
                         //
                         throw new Exception(msg);
@@ -254,7 +277,7 @@ public class DialogFrame extends JFrame implements ActionListener {
             doWriteStackTrace(thr, "debug.txt");
         }
         //
-        if (msg != null) {
+        if (msg != null && MAXERRMSG>=msg.length()) {
             JOptionPane.showMessageDialog(this,
                                           msg,
                                           msg_descr,
@@ -296,15 +319,25 @@ public class DialogFrame extends JFrame implements ActionListener {
     }
     //
     
+    String getFlightNumber(String __pathname) throws Exception {
+        if(!FPassengerInfo.isEmpty() && FPassengerInfo.containsKey(__pathname)){
+            return(FPassengerInfo.get(__pathname).FlightNum);
+        }
+        return(null);
+    }
+    
     int getCheckweightOfLuggage(String __pathname) throws Exception {
         int ch_weight =-1;
+        String find_id=null;
         //
         if(bServerStarted && bTableExist){
-            String find_id=null;
             if(!FPassengerInfo.isEmpty() && FPassengerInfo.containsKey(__pathname)){
                 find_id = FPassengerInfo.get(__pathname).Id;
             }
             ch_weight = DataBaseProcess.getCheckedWeightBy(find_id);
+        }
+        if(-1 == ch_weight){
+            System.out.println("\nIncorrect weight");
         }
         //
         return(ch_weight);
@@ -353,12 +386,11 @@ public class DialogFrame extends JFrame implements ActionListener {
         //
     }
 
-    private static Image createImageIcon(String path) {
+    private static Image createIconImage(String path) {
         java.net.URL imgURL = DialogFrame.class.getResource(path);
         if (imgURL != null) {
             return (new ImageIcon(imgURL).getImage());
         } else {
-            System.err.println("Couldn't find file: " + path);
             return null;
         }
     }
@@ -443,7 +475,7 @@ public class DialogFrame extends JFrame implements ActionListener {
         catch (IOException ex) {
             thr = ex;
             //
-            msg = "\nError " + ex.getLocalizedMessage();
+            msg = "Error " + ex.getLocalizedMessage();
             msg_type = JOptionPane.ERROR_MESSAGE;
             msg_descr = "Error";
             FFileCh.setSelectedFile(null);
@@ -453,17 +485,26 @@ public class DialogFrame extends JFrame implements ActionListener {
         catch(Exception ex){
             thr = ex;
             FFileCh.setSelectedFile(null);
-            msg = "\nError " + ex.getMessage();
+            msg = "Error " + ex.getMessage();
         }
         //
         if(null != thr){
         doWriteStackTrace(thr, "debug.txt");
         }
         //
-        JOptionPane.showMessageDialog(this,
-                                      msg,
-                                      msg_descr,
-                                      msg_type);
+        if (MAXERRMSG >= msg.length()) {
+            JOptionPane.showMessageDialog(this,
+                    msg,
+                    msg_descr,
+                    msg_type);
+        }
+        else if (JOptionPane.ERROR_MESSAGE == msg_type) {
+            JOptionPane.showMessageDialog(this,
+                    "Error happened: see debug.txt",
+                    msg_descr,
+                    msg_type);
+
+        }
     }
     //
 
@@ -499,6 +540,9 @@ public class DialogFrame extends JFrame implements ActionListener {
     }
     //
     
+    public static final int MAXERRMSG=256;
+    //
+    
     private String FServerJarPath;
     private JMenuItem FStartStopServer;
     private JMenuItem FGenerateXml;
@@ -514,5 +558,4 @@ public class DialogFrame extends JFrame implements ActionListener {
     private DataCreator FDataCreator;
     private DataBaseProcess FDbProcess;
     private Map<String, PassengerInfo> FPassengerInfo;
-    //
 }

@@ -166,7 +166,6 @@ public class DataBaseProcess {
     
     static boolean isTbExist(Connection __conn) throws SQLException {
         //
-        String find_schema_nm = FConfigProps.getProperty("username");
         String find_tb_nm = FConfigProps.getProperty("table.name");
         boolean b_exist = false;
         DatabaseMetaData db_meta_data = __conn.getMetaData();
@@ -189,10 +188,7 @@ public class DataBaseProcess {
     private static Properties loadProperties(String __config_props_fnm)
             throws IOException, URISyntaxException {
         //
-//        URL prop_url = DataBaseProcess.class.getResource(__config_props_fnm);
-//        FileInputStream fis = new FileInputStream(new File(prop_url.toURI()));
         InputStream is = DataBaseProcess.class.getResourceAsStream(__config_props_fnm);
-//        InputStreamReader is = new InputStreamReader(fis, "UTF8");
         InputStreamReader isr = new InputStreamReader(is, "UTF8");
         Properties out_props = new Properties();
         //
