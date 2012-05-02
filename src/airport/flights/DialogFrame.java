@@ -277,11 +277,18 @@ public class DialogFrame extends JFrame implements ActionListener {
             doWriteStackTrace(thr, "debug.txt");
         }
         //
-        if (msg != null && MAXERRMSG>=msg.length()) {
+        if (msg != null && MAXERRMSG >= msg.length()) {
             JOptionPane.showMessageDialog(this,
-                                          msg,
-                                          msg_descr,
-                                          msg_type);
+                    msg,
+                    msg_descr,
+                    msg_type);
+        }
+        else if (JOptionPane.ERROR_MESSAGE == msg_type) {
+            JOptionPane.showMessageDialog(this,
+                    "Error happened: see debug.txt",
+                    msg_descr,
+                    msg_type);
+
         }
         //
     }
