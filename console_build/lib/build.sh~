@@ -1,0 +1,9 @@
+#!/bin/sh
+cd ./airport/flights/ ;
+rm *.class ;
+cd ../../ ;
+javac -cp "$CLASSPATH:derbyclient.jar:" airport/flights/*.java ;
+jar -cvf ../dist/PassengerLuggage.jar airport/flights/* ;
+
+
+
