@@ -1,3 +1,10 @@
+dist="../dist" 
+
+if [ ! -d $dist ]; then
+	echo "dist does not. Create dist" ;
+	mkdir $dist ;
+fi 
+######################
 #!/bin/sh
 cd ../lib/airport/flights/ ;
 rm -f *.class ;

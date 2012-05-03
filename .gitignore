@@ -34,6 +34,7 @@ Icon?
 Thumbs.db
 #########
 build
+dist
 private
 AIRPORT
 *~
