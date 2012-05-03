@@ -1,9 +1,0 @@
-#!/bin/sh
-cd ./test ;
-rm -f *.class ;
-cd ../ ;
-javac -cp "$CLASSPATH:./dist/PassengerLuggage.jar:." ./test/Test.java ;
-java -cp "$CLASSPATH:./dist/PassengerLuggage.jar:." test.Test ;
-
-
-
