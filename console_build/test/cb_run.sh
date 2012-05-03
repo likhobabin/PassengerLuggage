@@ -1,3 +1,5 @@
+#!/bin/sh
+
 dist="../dist" 
 
 if [ ! -d $dist ]; then
@@ -5,7 +7,6 @@ if [ ! -d $dist ]; then
 	mkdir $dist ;
 fi 
 ######################
-#!/bin/sh
 cd ../lib/airport/flights/ ;
 rm -f *.class ;
 #to lib dir
