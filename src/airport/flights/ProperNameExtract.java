@@ -80,6 +80,12 @@ public class ProperNameExtract {
         return (FStorage == null ) ? new ArrayList<String>( ) : FStorage;
     }
     //
+    
+    public static boolean valWord(String __word){
+        return(__word.matches(VALIDATE_REXP));
+    }
+    //
+    
     private List<String > FStorage;
     private static final String VALIDATE_REXP = "^\\p{Lu}.+";    
     //

@@ -167,23 +167,20 @@ public class ContentPane extends JPanel {
                             //
                             String temp = (String) FRequestList.get(idx);
                             FClickPass = temp;
-                            StringTokenizer str_tokenz = new StringTokenizer(temp);
-                            int i = 0;
-                            while (str_tokenz.hasMoreTokens()) {
-                                String word = str_tokenz.nextToken(" ");
-                                if (i == 0) {
-                                    FName.setText(word);
-                                }
-                                if (i == 1) {
-                                    FSurname.setText(word);
-                                }
-                                i++;
+                            String[] path_nm = temp.split(" ");
+                            //
+                            if(ProperNameExtract.valWord(path_nm[0]) &&
+                                    ProperNameExtract.valWord(path_nm[1])){
+                                FName.setText(path_nm[0]);
+                                FSurname.setText(path_nm[1]);
+                            }
+                            else{
+                                throw new IllegalArgumentException("ContentPane"
+                                        + ".createPassengerScrollList"
+                                        + ".valueChanged Incorrect pathname ");
                             }
                             //
-                            boolean ch_temp = false;
-                            if (FOwner.isLuggPutOut(FClickPass)) {
-                                ch_temp = true;
-                            }
+                            boolean ch_temp = FOwner.isLuggPutOut(FClickPass);
                             //
                             FLuggOutputChBox.setEnabled(!ch_temp);
                             FLuggOutputChBox.setSelected(ch_temp);
