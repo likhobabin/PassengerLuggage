@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 //
 /**
- * <code>DialogFrame</code> is a simple graphic application responsible of making
+ * <code>DialogFrame</code> is a simple dialog representing
  * all of necessary tasks: starting/stopping database server, 
  * generating a xml-doc, creating/deleting database table and 
  * processing passenger data.

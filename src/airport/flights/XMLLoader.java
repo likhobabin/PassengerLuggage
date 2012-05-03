@@ -32,9 +32,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 //
 /**
- *<code>PassengerInfo</code> represents a simple structure to store id of
- * passenger and remains state of passenger luggage offloading.
- * 
+ *<code>PassengerInfo</code> represents a simple structure to store id and flight 
+ * number of passenger and remains state of passenger luggage offloading.
  */
 class PassengerInfo{
     String Id;

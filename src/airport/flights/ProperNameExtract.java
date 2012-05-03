@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 //
 /**
  * <code>ProperNameExtract</code> extracts and remains a proper name list 
- * from input file.
+ * of input file.
  */
 public class ProperNameExtract {
     //
