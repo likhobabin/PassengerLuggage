@@ -30,8 +30,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
 //
 /**
  *<code>PassengerInfo</code> represents a simple structure to store id of
@@ -66,8 +64,10 @@ public class XMLLoader {
      * @return
      * @throws Exception 
      */
-    public Map<String , PassengerInfo > loadDoc(boolean __unmodif)
-            throws Exception {
+    public Map<String , PassengerInfo > loadDoc(boolean __unmodif) 
+                                            throws ParserConfigurationException, 
+                                                   SAXException, 
+                                                   IOException {
         //
         Document doc = getParsedDoc();
         //
@@ -98,10 +98,10 @@ public class XMLLoader {
     //
     
     private static Element getChild(NodeList __childs, int __idx) 
-            throws Exception {
+            throws  IllegalArgumentException {
         //
         if(__childs.getLength()<__idx){
-            throw new Exception("XMLLoader.getChild Input Index "
+            throw new IllegalArgumentException("XMLLoader.getChild Input Index "
                     + "is out of NodeList borders");
         }
         //
@@ -111,8 +111,7 @@ public class XMLLoader {
     }
     //
     
-    private void processFlight(Node __flight)
-            throws Exception {
+    private void processFlight(Node __flight) {
         //
         NodeList f_passengers = __flight.getChildNodes();
         for (int i = 0x0; f_passengers.getLength() > i; i++) {

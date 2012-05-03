@@ -8,9 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.FileInputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 //
 import java.sql.SQLException;
 import java.sql.DriverManager;
@@ -23,68 +23,61 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Collections;
 import java.util.Iterator;
+
 /**
- *<code>DataBaseProcess</code> provides the following capabilities:
- *<UL>
- *<LI>Controlling state of data base server.</LI>
- *<LI>Creating and deleting table.</LI>
- *<LI>Processing simple query setting in task.</LI>
- *</UL>
- *<code>DataBaseProcess</code> uses Apache Derby Database. All of needed 
- *database settings are in the property file:
- *<UL>
- *<LI>JDBC driver name.</LI>
- *<LI>URL to connect server database.</LI>
- *<LI>Name of creating table.</LI>
- *</UL>
- *This file also has a following settings:  
- *<UL>
- *<LI>Path to the files that contain names and surnames to generate xml-doc.</LI>
- *<LI>Using charset of above files.</LI>
- *<LI>Path to output xml-doc.</LI>
- *</UL>
+ * <code>DataBaseProcess</code> provides the following capabilities: <UL>
+ * <LI>Controlling state of data base server.</LI> <LI>Creating and deleting
+ * table.</LI> <LI>Processing simple query setting in task.</LI> </UL>
+ * <code>DataBaseProcess</code> uses Apache Derby Database. All of needed
+ * database settings are in the property file: <UL> <LI>JDBC driver name.</LI>
+ * <LI>URL to connect server database.</LI> <LI>Name of creating table.</LI>
+ * </UL> This file also has a following settings: <UL> <LI>Path to the files
+ * that contain names and surnames to generate xml-doc.</LI> <LI>Using charset
+ * of above files.</LI> <LI>Path to output xml-doc.</LI> </UL>
  */
 public class DataBaseProcess {
     //
+
     /**
      * @param __derby_lib_path
-     * @throws IOException 
+     * @throws IOException usr
      */
     public static void startServer(String __derby_lib_path)
             throws IOException {
-        if(null == __derby_lib_path){
+        if (null == __derby_lib_path) {
             __derby_lib_path = FConfigProps.getProperty("pl.server_jar_path");
         }
         //
-        Process p = Runtime.getRuntime().exec("java -jar " + __derby_lib_path 
+        Process p = Runtime.getRuntime().exec("java -jar " + __derby_lib_path
                 + " server start");
     }
     //
 
     public static void stopServer(String __derby_lib_path)
             throws IOException {
-        if(null == __derby_lib_path){
+        if (null == __derby_lib_path) {
             __derby_lib_path = FConfigProps.getProperty("pl.server_jar_path");
         }
         //
-        Process p = Runtime.getRuntime().exec("java -jar " + __derby_lib_path 
+        Process p = Runtime.getRuntime().exec("java -jar " + __derby_lib_path
                 + " server shutdown");
     }
     // 
+
     /**
      * Connect to database
+     *
      * @return
      * @throws ClassNotFoundException
      * @throws SQLException
      * @throws IOException
-     * @throws URISyntaxException 
+     * @throws URISyntaxException
      */
-
     public static Connection loadDB()
             throws ClassNotFoundException,
-            SQLException,
-            IOException,
-            URISyntaxException {
+                   SQLException,
+                   IOException,
+                   URISyntaxException {
         //
         String db_driver = FConfigProps.getProperty("jdbc.driver");
         String db_url = FConfigProps.getProperty("jdbc.url");
@@ -101,18 +94,20 @@ public class DataBaseProcess {
         return (conn);
     }
     //    
+
     /**
-     * Delete table 
+     * Delete table
+     *
      * @throws SQLException
      * @throws IOException
      * @throws ClassNotFoundException
-     * @throws Exception 
+     * @throws Exception
      */
     public static void deleteTb()
             throws SQLException,
-            IOException,
-            ClassNotFoundException,
-            Exception {
+                   IOException,
+                   ClassNotFoundException, 
+                   URISyntaxException {
         //
         Connection conn = loadDB();
         if (isTbExist(conn)) {
@@ -130,17 +125,20 @@ public class DataBaseProcess {
         }
     }
     //
+
     /**
      * Made a query to return a checked weight of passenger luggage
+     *
      * @param __find_id Id of passenger
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public static int getCheckedWeightBy(String __find_id) throws Exception {
         String tbName = FConfigProps.getProperty("table.name");
         Connection conn = DataBaseProcess.loadDB();
-        String query = "SELECT checked_weight FROM " + tbName 
-                + " WHERE id = "+__find_id;
+        String query = "SELECT checked_weight FROM " + tbName
+                + " WHERE id = " + __find_id;
+        Throwable thr = null;
         //
         try {
             Statement stmnt = conn.createStatement();
@@ -148,22 +146,26 @@ public class DataBaseProcess {
             //
             q_result = stmnt.executeQuery(query);
             while (q_result.next()) {
-                return(q_result.getInt(1));
+                return (q_result.getInt(1));
             }
         }
         catch (SQLException ex) {
+            thr = ex;
             for (Throwable t : ex) {
                 t.printStackTrace();
             }
         }
         finally {
+            if (null != thr) {
+                doWriteStackTrace(thr, "debug.txt");
+            }
             conn.close();
         }
         //
-        return(-1);
+        return (-1);
     }
     //
-    
+
     static boolean isTbExist(Connection __conn) throws SQLException {
         //
         String find_tb_nm = FConfigProps.getProperty("table.name");
@@ -184,7 +186,7 @@ public class DataBaseProcess {
         return (b_exist);
     }
     //
-    
+
     private static Properties loadProperties(String __config_props_fnm)
             throws IOException, URISyntaxException {
         //
@@ -200,28 +202,66 @@ public class DataBaseProcess {
         //
     }
     //   
-    
     final static Properties FConfigProps;
-    static 
-    {
-        Properties temp=null;
+
+    static {
+        Properties temp = null;
+        Throwable thr = null;
         try {
+
             temp = loadProperties("config.properties");
         }
         catch (URISyntaxException ex) {
+            thr = ex;
             ex.printStackTrace();
+        }
+        catch (IOException ex) {
+            thr = ex;
+            ex.printStackTrace();
+        }
+        catch (Exception ex) {
+            thr = ex;
+            ex.printStackTrace();
+        }
+        finally {
+            FConfigProps = temp;
+            if (null != thr) {
+                doWriteStackTrace(thr, "debug.txt");
+            }
+        }
+    }
+    //
+    static boolean bDebugExists = false;
+    //
+
+    public static void doWriteStackTrace(Throwable __thr, String __df_nm) {
+        //
+        try {
+            FileOutputStream fos = new FileOutputStream(__df_nm, bDebugExists);
+            //
+            if (!bDebugExists) {
+                bDebugExists = true;
+            }
+            //
+            PrintStream ps = new PrintStream(fos);
+            //
+            if (__thr instanceof SQLException) {
+                SQLException temp = (SQLException) __thr;
+                for (Throwable t : temp) {
+                    t.printStackTrace(ps);
+                }
+            }
+            else {
+                __thr.printStackTrace(ps);
+            }
+            //
+            ps.close();
+            fos.close();
         }
         catch (IOException ex) {
             ex.printStackTrace();
         }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        finally 
-        {
-         
-            FConfigProps = temp;   
-        }
+        //
     }
     //
 }

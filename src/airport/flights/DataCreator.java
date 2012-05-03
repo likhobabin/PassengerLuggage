@@ -5,12 +5,18 @@
 package airport.flights;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import org.xml.sax.SAXException;
 
 /**
  *<code>DataCreator</code> represents an object that combines a XMLCreator, 
@@ -19,7 +25,7 @@ import java.util.Random;
  */
 class DataCreator {
 
-    DataCreator() throws Exception {
+    DataCreator() throws IOException, URISyntaxException  {
         String f_names_path =
                 DataBaseProcess.FConfigProps.getProperty("pl.names_path");
         String f_surnames_path =
@@ -34,7 +40,10 @@ class DataCreator {
      * Generate an xml-doc and safe it in the file
      * @throws Exception 
      */
-    public void generateXML() throws Exception {
+    public void generateXML() throws IOException, URISyntaxException, 
+                                     ParserConfigurationException, 
+                                     TransformerConfigurationException, 
+                                     TransformerException {
         String f_xml_path =
                 DataBaseProcess.FConfigProps.getProperty("pl.xml_path");
         String curr_dir_path = new File(".").getCanonicalPath();
@@ -49,7 +58,13 @@ class DataCreator {
      * @return
      * @throws Exception 
      */
-    public Map<String , PassengerInfo > createDataBase() throws Exception {
+    public Map<String , PassengerInfo > createDataBase() 
+                                        throws IOException,
+                                               ClassNotFoundException, 
+                                               SQLException, 
+                                               URISyntaxException, 
+                                               ParserConfigurationException, 
+                                               SAXException {
         String f_xml_path =
                 DataBaseProcess.FConfigProps.getProperty("pl.xml_path");
         String curr_dir_path = new File(".").getCanonicalPath();
@@ -60,8 +75,13 @@ class DataCreator {
     }
     //
     
-    private Map<String , PassengerInfo > creatTable(XMLLoader __xml_loader)
-            throws Exception {
+    private Map<String , PassengerInfo > creatTable(XMLLoader __xml_loader) 
+            throws ClassNotFoundException, 
+                   SQLException, 
+                   IOException, 
+                   URISyntaxException, 
+                   ParserConfigurationException, 
+                   SAXException {
         //
         Connection conn = DataBaseProcess.loadDB();
         String db_driver =
@@ -114,7 +134,7 @@ class DataCreator {
     //
 
     private XMLCreator getXmlCreator(String f_nms_path,
-            String f_surnms_path) throws Exception {
+            String f_surnms_path) throws IOException, URISyntaxException {
         String char_set =
                 DataBaseProcess.FConfigProps.getProperty("pl.charset");
         return ((FXmlCreator == null)

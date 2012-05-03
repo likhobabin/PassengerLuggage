@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package airport.flights;
-
-/**
- *
- * @author lya
- */
+//
 import java.util.Set;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -35,22 +27,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 //
-/** 
- * <code>ConetentPane</code> shows all of necessary information of passengers:
- * <UL>
- * <LI>Pathname List.
- * <LI>Luggage checked weight.
- * <LI>Luggage state. 
- * </UL>
- * 
- */
 
+/**
+ * <code>ConetentPane</code> shows all of necessary information of passengers:
+ * <UL> <LI>Pathname List. <LI>Luggage checked weight. <LI>Luggage state. </UL>
+ *
+ */
 public class ContentPane extends JPanel {
     //
-    ContentPane( ){
+
+    ContentPane() {
         //
         BorderLayout m_layout = new BorderLayout();
-        
+
         setLayout(m_layout);
         //
         FReqBarTitle = new JLabel("Passengers");
@@ -63,7 +52,7 @@ public class ContentPane extends JPanel {
         FRequestBar.add(FReqBarTitle);
         FRequestBar.add(FRequestScroll);
         //
-        FResponseBar = new JPanel( );
+        FResponseBar = new JPanel();
         FName = new JTextArea();
         FName.setColumns(20);
         FSurname = new JTextArea();
@@ -83,9 +72,10 @@ public class ContentPane extends JPanel {
         FCheckWeight.setEditable(false);
         lugg_panel.add(FLuggOutputChBox);
         //
-        FLuggOutputChBox.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent __ev){
-                if(null != FClickPass){
+        FLuggOutputChBox.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent __ev) {
+                if (null != FClickPass) {
                     FOwner.putoutLuggageTo(FClickPass);
                     FLuggOutputChBox.setEnabled(false);
                 }
@@ -101,18 +91,18 @@ public class ContentPane extends JPanel {
         FSurname.setBorder(createTextFieldBorder("Surname", Color.BLACK));
         FSurname.setEditable(false);
         FSurname.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        FFlightNum.setBorder(createTextFieldBorder("Flight Number", 
-                                                    Color.BLACK));
+        FFlightNum.setBorder(createTextFieldBorder("Flight Number",
+                Color.BLACK));
         FFlightNum.setEditable(false);
         FFlightNum.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        lugg_panel.setBorder(createTextFieldBorder("Luggage Checked weight kg.", 
-                                                   Color.BLACK));
+        lugg_panel.setBorder(createTextFieldBorder("Luggage Checked weight kg.",
+                Color.BLACK));
         lugg_panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         //
         FResponseBar.add(FName);
         FResponseBar.add(FSurname);
         FResponseBar.add(FFlightNum);
-        FResponseBar.add(lugg_panel);     
+        FResponseBar.add(lugg_panel);
         //
         //FRequestBar.setAlignmentX(Component.LEFT_ALIGNMENT);
         add(FRequestBar, BorderLayout.WEST);
@@ -120,24 +110,25 @@ public class ContentPane extends JPanel {
         add(FResponseBar, BorderLayout.EAST);
     }
     //
-    
-    void fillList(Set<String > __pass_set){
-        Iterator<String > it = __pass_set.iterator();
-        if(!FRequestList.isEmpty())
+
+    void fillList(Set<String> __pass_set) {
+        Iterator<String> it = __pass_set.iterator();
+        if (!FRequestList.isEmpty()) {
             FRequestList.clear();
-        while(it.hasNext()){
+        }
+        while (it.hasNext()) {
             FRequestList.addElement(it.next());
         }
     }
     //
-    
-    void updateList( ){
+
+    void updateList() {
         FRequestScroll.validate();
         FRequestScroll.repaint();
     }
     //
-    
-    void clearAll(){
+
+    void clearAll() {
         FRequestList.clear();
         FName.setText("");
         FSurname.setText("");
@@ -146,17 +137,17 @@ public class ContentPane extends JPanel {
         FLuggOutputChBox.setEnabled(false);
         FLuggOutputChBox.setSelected(false);
         //
-        updateList( );
-        
+        updateList();
+
     }
-    
+
     private void updateRespBar() {
         FResponseBar.validate();
         FResponseBar.repaint();
     }
-    
-    private JScrollPane createPassengerScrollList( ){
-        FRequestList = new DefaultListModel( );
+
+    private JScrollPane createPassengerScrollList() {
+        FRequestList = new DefaultListModel();
         JList temp_list = new JList(FRequestList);
         JScrollPane req_scroll = new JScrollPane(temp_list);
         //
@@ -165,6 +156,8 @@ public class ContentPane extends JPanel {
 
             public void valueChanged(ListSelectionEvent __ev) {
                 if (__ev.getSource() instanceof JList) {
+                    //
+                    Throwable thr = null;
                     //
                     try {
                         //
@@ -187,16 +180,16 @@ public class ContentPane extends JPanel {
                                 i++;
                             }
                             //
-                            boolean ch_temp=false;
-                            if(FOwner.isLuggPutOut(FClickPass)) {
-                                ch_temp=true;
+                            boolean ch_temp = false;
+                            if (FOwner.isLuggPutOut(FClickPass)) {
+                                ch_temp = true;
                             }
                             //
                             FLuggOutputChBox.setEnabled(!ch_temp);
                             FLuggOutputChBox.setSelected(ch_temp);
                             //
                             FFlightNum.setText(FOwner.getFlightNumber(FClickPass));
-                            int ch_w = FOwner.getCheckweightOfLuggage(FClickPass);
+                            int ch_w = FOwner.getCheckedweightOfLuggage(FClickPass);
                             FCheckWeight.setText(Integer.toString(ch_w));
                             //
                             updateRespBar();
@@ -205,22 +198,25 @@ public class ContentPane extends JPanel {
                         //
                     }
                     catch (Exception ex) {
+                        thr = ex;
                         JOptionPane.showMessageDialog(null,
-                                                     ex.getLocalizedMessage(),
-                                                     "Error",
-                                                     JOptionPane.ERROR_MESSAGE);
+                                ex.getLocalizedMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     }
-                    //
+                    //        
+                    if (null != thr) {
+                        DataBaseProcess.doWriteStackTrace(thr, "debug.txt");
+                    }
                 }
             }
-                    
         });
         temp_list.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return(req_scroll);
+        return (req_scroll);
     }
     //
-    
-    private static Border createTextFieldBorder(String __title, Color __color){
+
+    private static Border createTextFieldBorder(String __title, Color __color) {
         Border color_border = BorderFactory.createLineBorder(__color);
         TitledBorder tf_border = BorderFactory.createTitledBorder(__title);
         //
@@ -228,29 +224,27 @@ public class ContentPane extends JPanel {
         tf_border.setTitlePosition(TitledBorder.DEFAULT_POSITION);
         tf_border.setBorder(color_border);
         //
-        return(tf_border);        
+        return (tf_border);
     }
     //
-    
+
     private static Border createColorBorder(Color __color) {
         Border color_border = BorderFactory.createLineBorder(__color);
         //
         return (color_border);
     }
     //
-    
-    void setOwner(DialogFrame __owner){
-        if(null == FOwner){
+
+    void setOwner(DialogFrame __owner) {
+        if (null == FOwner) {
             FOwner = __owner;
         }
     }
     //
-    
     private JPanel FRequestBar;
     private JLabel FReqBarTitle;
     private JScrollPane FRequestScroll;
     private DefaultListModel FRequestList;
-    
     private JPanel FResponseBar;
     private JTextArea FName;
     private JTextArea FSurname;

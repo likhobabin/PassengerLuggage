@@ -1,8 +1,9 @@
 #!/bin/sh
-javac -cp "$CLASSPATH:$DERBY_LIB/derbyclient.jar:./dist/PassengerLuggage.jar:." ./test/Test.java ;
-#java -cp "$CLASSPATH:$DERBY_LIB/derbyclient.jar:./dist/PassengerLuggage.jar:." test.Test ;
-export CLASSPATH="$CLASSPATH:/home/ilya/Workspace/Programming/Java/PassengerLuggage/console_build/dist/";
-java test.Test ;
+cd ./test ;
+rm -f *.class ;
+cd ../ ;
+javac -cp "$CLASSPATH:./dist/PassengerLuggage.jar:." ./test/Test.java ;
+java -cp "$CLASSPATH:./dist/PassengerLuggage.jar:." test.Test ;
 
 
 

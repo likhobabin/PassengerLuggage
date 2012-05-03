@@ -1,15 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package airport.flights;
-
-/**
- *
- * @author ilya
- */
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 //
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -30,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 //
 import java.net.URISyntaxException;
+import java.net.URL;
 //
 import java.sql.SQLException;
 //
@@ -60,52 +50,10 @@ import org.xml.sax.SAXParseException;
 public class DialogFrame extends JFrame implements ActionListener {
     //
 
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            //
-            String ex_msg=null;
-            public void run() {
-                DialogFrame dlgFrame = null;
-                Throwable thr=null;
-                //
-                try {
-                    //
-                    dlgFrame = new DialogFrame("Airport");
-                    //
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                    thr=ex;
-                    ex_msg = ex.getLocalizedMessage();
-                }                
-                //
-                if (null != ex_msg) {
-                    if (MAXERRMSG >= ex_msg.length()) {
-                        JOptionPane.showMessageDialog(null,
-                                ex_msg,
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(null,
-                                "Error happened: see debug.txt",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-
-                    }
-                    //
-                    if (null != thr) {
-                        doWriteStackTrace(thr, "debug.txt");
-                    }
-                    //
-                }
-            }
-            //
-        });
-    }
-    //
-
-    public DialogFrame(String __title) throws Exception {
+    public DialogFrame(String __title) throws SQLException,
+                                              IOException,
+                                              ClassNotFoundException,
+                                              URISyntaxException {
         super(__title);
         //
         FServerJarPath = "";
@@ -135,13 +83,32 @@ public class DialogFrame extends JFrame implements ActionListener {
         //
         addWindowListener(new WindowAdapter() {
             //
+
             public void windowClosing(WindowEvent __cl_ev) {
                 //
-                Throwable thr=null;
+                Throwable thr = null;
+                String msg = null;
+                String msg_descr = "Error";
+                int msg_type = JOptionPane.ERROR_MESSAGE;
+                //
                 try {
                     //
                     stopServer();
                     //
+                }
+                catch(SQLException ex){
+                    thr = ex;
+                }
+                catch(IOException ex){
+                    thr = ex;
+                    
+                }
+                catch(ClassNotFoundException ex){
+                    thr = ex;
+                    
+                }
+                catch(URISyntaxException ex){
+                    thr = ex;                    
                 }
                 catch (Exception ex) {
                     //
@@ -162,9 +129,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                     //
                 }
                 //
-                if (null != thr) {
-                    doWriteStackTrace(thr, "debug.txt");
-                }
+                processException(thr, msg, msg_descr, msg_type);
                 //
             }
             //
@@ -208,7 +173,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                             msg_descr = "Error";
                             msg_type = JOptionPane.ERROR_MESSAGE;
                             //
-                            throw new Exception(msg);
+                            throw new IllegalArgumentException(msg);
                         }
                     }
                     //
@@ -231,7 +196,7 @@ public class DialogFrame extends JFrame implements ActionListener {
                             msg += "\nStart server ";
                         }
                         //
-                        throw new Exception(msg);
+                        throw new IllegalArgumentException(msg);
                         //
                     }
                     //
@@ -244,6 +209,12 @@ public class DialogFrame extends JFrame implements ActionListener {
                 //
             }
             //
+        }
+        catch(ClassNotFoundException ex){
+            thr = ex;
+        }
+        catch(IOException ex){
+            thr = ex;
         }
         catch (URISyntaxException ex) {
             thr = ex;
@@ -266,35 +237,19 @@ public class DialogFrame extends JFrame implements ActionListener {
         catch (SQLException ex) {
             thr = ex;
         }
-        catch (Exception ex) {
+        catch (IllegalArgumentException ex) {
             thr = ex;
         }
         //
-        if (thr != null) {
-            msg = thr.getLocalizedMessage();
-            msg_descr = "Error";
-            msg_type = JOptionPane.ERROR_MESSAGE;       
-            doWriteStackTrace(thr, "debug.txt");
-        }
-        //
-        if (msg != null && MAXERRMSG >= msg.length()) {
-            JOptionPane.showMessageDialog(this,
-                    msg,
-                    msg_descr,
-                    msg_type);
-        }
-        else if (JOptionPane.ERROR_MESSAGE == msg_type) {
-            JOptionPane.showMessageDialog(this,
-                    "Error happened: see debug.txt",
-                    msg_descr,
-                    msg_type);
-
-        }
+        processException(thr, msg, msg_descr, msg_type);
         //
     }
     //
 
-    void stopServer() throws Exception {
+    void stopServer() throws SQLException, 
+                             IOException, 
+                             ClassNotFoundException, 
+                             URISyntaxException {
         //Stopping database server 
         if (bServerStarted) {
             DataBaseProcess.deleteTb();
@@ -333,21 +288,24 @@ public class DialogFrame extends JFrame implements ActionListener {
         return(null);
     }
     
-    int getCheckweightOfLuggage(String __pathname) throws Exception {
-        int ch_weight =-1;
-        String find_id=null;
+    int getCheckedweightOfLuggage(String __pathname) throws Exception {
+        int ch_weight = -1;
+        String find_id = null;
         //
-        if(bServerStarted && bTableExist){
-            if(!FPassengerInfo.isEmpty() && FPassengerInfo.containsKey(__pathname)){
+        if (bServerStarted && bTableExist) {
+            if (!FPassengerInfo.isEmpty() && FPassengerInfo.containsKey(__pathname)) {
                 find_id = FPassengerInfo.get(__pathname).Id;
             }
             ch_weight = DataBaseProcess.getCheckedWeightBy(find_id);
         }
-        if(-1 == ch_weight){
-            System.out.println("\nIncorrect weight");
+        else {
+            JOptionPane.showMessageDialog(this,
+                    "Can't get checked-weight of luggage\nStart Server",
+                    "Warrning",
+                    JOptionPane.WARNING_MESSAGE);
         }
         //
-        return(ch_weight);
+        return (ch_weight);
     }
     //
 
@@ -379,19 +337,6 @@ public class DialogFrame extends JFrame implements ActionListener {
         //
     }
     //
-    
-    public static void doWriteStackTrace(Throwable __thr, String __df_path) {
-        //
-        try {
-            FileOutputStream fos = new FileOutputStream(__df_path);
-            PrintStream ps = new PrintStream(fos);
-            __thr.printStackTrace(ps);
-        }
-        catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        //
-    }
 
     private static Image createIconImage(String path) {
         java.net.URL imgURL = DialogFrame.class.getResource(path);
@@ -404,8 +349,7 @@ public class DialogFrame extends JFrame implements ActionListener {
     //
 
     private void doStartStopServer() throws SQLException,
-                                            ClassNotFoundException,
-                                            Exception {
+                                            ClassNotFoundException {
         //
         String msg = null;
         String msg_descr = null;
@@ -456,16 +400,18 @@ public class DialogFrame extends JFrame implements ActionListener {
                             FServerJarPath = jar_file_path;
                         } else {
                             msg_type = JOptionPane.ERROR_MESSAGE;
-                            msg_descr += "Warrning";
+                            msg_descr = "Warrning";
                             //
                             FFileCh.setSelectedFile(null);
-                            throw new Exception("Can't start/stop server "
+                            throw new IllegalArgumentException("Can't start/stop server "
                                                 + "\nIncorrect .jar");
                         }
                     }
                     //
                     if (returnVal == JFileChooser.CANCEL_OPTION) {
-                        throw new Exception("Have been chosen a cancel btn");
+                        msg_descr = "Warrning";
+                        msg_type = JOptionPane.WARNING_MESSAGE;
+                        throw new IllegalArgumentException("Have been chosen a cancel btn");
                     }
                 }
                 //
@@ -488,34 +434,23 @@ public class DialogFrame extends JFrame implements ActionListener {
             FFileCh.setSelectedFile(null);
             //
         }
-        //
-        catch(Exception ex){
+        catch(IllegalArgumentException ex){
             thr = ex;
             FFileCh.setSelectedFile(null);
             msg = "Error " + ex.getMessage();
         }
         //
-        if(null != thr){
-        doWriteStackTrace(thr, "debug.txt");
-        }
+        processException(thr, msg, msg_descr, msg_type);
         //
-        if (MAXERRMSG >= msg.length()) {
-            JOptionPane.showMessageDialog(this,
-                    msg,
-                    msg_descr,
-                    msg_type);
-        }
-        else if (JOptionPane.ERROR_MESSAGE == msg_type) {
-            JOptionPane.showMessageDialog(this,
-                    "Error happened: see debug.txt",
-                    msg_descr,
-                    msg_type);
-
-        }
     }
     //
 
-    private void doDeleteTable() throws Exception {
+    private void doDeleteTable() 
+            throws SQLException,
+            IOException,
+            ClassNotFoundException, 
+            URISyntaxException {
+        //
         DataBaseProcess.deleteTb();
         bTableExist = false;
         FCreateDelTb.setText("Create Table");
@@ -526,10 +461,16 @@ public class DialogFrame extends JFrame implements ActionListener {
         //
         FContentPane.clearAll();
         pack();
+        //
     }
     //
 
-    private void doCreateTable() throws Exception {
+    private void doCreateTable() throws IOException, 
+                                        ClassNotFoundException, 
+                                        SQLException, 
+                                        URISyntaxException, 
+                                        ParserConfigurationException, 
+                                        SAXException {
         FPassengerInfo = FDataCreator.createDataBase();
         Set<String > pass_list = FPassengerInfo.keySet();
         FContentPane.fillList(pass_list);
@@ -544,6 +485,36 @@ public class DialogFrame extends JFrame implements ActionListener {
     private void updatePassengerList( ){
         FContentPane.updateList();
         pack();
+    }
+    //
+    
+    public static void processException(Throwable __thr, String __msg, 
+                                                   String __msg_descr,
+                                                   int __msg_type) {
+
+        //
+        if (__thr != null) {
+            __msg = __thr.getLocalizedMessage();
+            __msg_descr = "Error";
+            __msg_type = JOptionPane.ERROR_MESSAGE;
+            DataBaseProcess.doWriteStackTrace(__thr, "debug.txt");
+        }
+        //
+        if (__msg != null) {
+            if (MAXERRMSG >= __msg.length()) {
+                JOptionPane.showMessageDialog(null,
+                        __msg,
+                        __msg_descr,
+                        __msg_type);
+            }
+            else if (JOptionPane.ERROR_MESSAGE == __msg_type) {
+                JOptionPane.showMessageDialog(null,
+                        "Error happened: see debug.txt",
+                        __msg_descr,
+                        __msg_type);
+
+            }
+        }
     }
     //
     
