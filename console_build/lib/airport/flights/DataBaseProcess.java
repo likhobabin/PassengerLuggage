@@ -112,8 +112,6 @@ public class DataBaseProcess {
         Connection conn = loadDB();
         if (isTbExist(conn)) {
             //
-            String db_driver = FConfigProps.getProperty("jdbc.driver");
-            String db_url = FConfigProps.getProperty("jdbc.url");
             String tb_name = FConfigProps.getProperty("table.name");
             String delete_tb_query = "DROP TABLE " + tb_name;
             Statement stmnt;

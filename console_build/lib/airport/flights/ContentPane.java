@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 
 /**
  * <code>ConetentPane</code> shows all of necessary information of passengers:
- * <UL> <LI>Pathname List. <LI>Luggage checked weight. <LI>Luggage state. </UL>
+ * <UL> <LI>Pathname List. <LI>Luggage checked-weight. <LI>Luggage state. </UL>
  *
  */
 public class ContentPane extends JPanel {
@@ -77,7 +77,6 @@ public class ContentPane extends JPanel {
             public void actionPerformed(ActionEvent __ev) {
                 if (null != FClickPass) {
                     FOwner.putoutLuggageTo(FClickPass);
-                    FLuggOutputChBox.setEnabled(false);
                 }
             }
         });
@@ -95,7 +94,7 @@ public class ContentPane extends JPanel {
                 Color.BLACK));
         FFlightNum.setEditable(false);
         FFlightNum.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        lugg_panel.setBorder(createTextFieldBorder("Luggage Checked weight kg.",
+        lugg_panel.setBorder(createTextFieldBorder("Luggage Checked-weight kg.",
                 Color.BLACK));
         lugg_panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         //
@@ -222,13 +221,6 @@ public class ContentPane extends JPanel {
         tf_border.setBorder(color_border);
         //
         return (tf_border);
-    }
-    //
-
-    private static Border createColorBorder(Color __color) {
-        Border color_border = BorderFactory.createLineBorder(__color);
-        //
-        return (color_border);
     }
     //
 
