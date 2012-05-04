@@ -33,7 +33,7 @@ import javax.xml.transform.TransformerException;
 //
 
 /**
- * A <code>XMLCreator</code> represent a generator of xml-docs 
+ * <code>XMLCreator</code> represents a generator of xml-docs 
  * of desired format that is reported by task.  
  */
 public class XMLCreator {

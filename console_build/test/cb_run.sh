@@ -1,4 +1,12 @@
 #!/bin/sh
+
+dist="../dist" 
+
+if [ ! -d $dist ]; then
+	echo "dist does not. Create dist" ;
+	mkdir $dist ;
+fi 
+######################
 cd ../lib/airport/flights/ ;
 rm -f *.class ;
 #to lib dir
