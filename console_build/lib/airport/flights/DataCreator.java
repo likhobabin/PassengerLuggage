@@ -138,7 +138,7 @@ class DataCreator {
         String char_set =
                 DataBaseProcess.FConfigProps.getProperty("pl.charset");
         return ((FXmlCreator == null)
-                ? new XMLCreator(f_nms_path, f_surnms_path, char_set)
+                ? (FXmlCreator = new XMLCreator(f_nms_path, f_surnms_path, char_set))
                 : FXmlCreator);
     }
     //
